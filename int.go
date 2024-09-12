@@ -1,16 +1,8 @@
 package span
 
 import (
-	"errors"
-
 	"github.com/akramarenkov/safe"
 	"golang.org/x/exp/constraints"
-)
-
-var (
-	ErrBeginGreaterEnd       = errors.New("begin is greater than end")
-	ErrSpansQuantityNegative = errors.New("spans quantity is negative")
-	ErrSpansQuantityZero     = errors.New("spans quantity is zero")
 )
 
 // Divides a sequence of integers from begin to end inclusive into spans.
