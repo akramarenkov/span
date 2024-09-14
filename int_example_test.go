@@ -8,11 +8,10 @@ import (
 
 func ExampleInt() {
 	spans, err := span.Int(1, 8, 3)
-	if err != nil {
-		fmt.Println(err)
-	}
-
+	fmt.Println(err)
 	fmt.Println(spans)
+
 	// Output:
+	// <nil>
 	// [{1 3} {4 6} {7 8}]
 }
