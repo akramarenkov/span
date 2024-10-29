@@ -44,25 +44,25 @@ func Int[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], err
 
 	spans := make([]Span[Type], 0, quantity)
 
-	for scopeBegin, scopeEnd := begin, begin+distance-1; ; {
+	for actualBegin, actualEnd := begin, begin+distance-1; ; {
 		if remainder != 0 {
-			scopeEnd++
+			actualEnd++
 			remainder--
 		}
 
 		item := Span[Type]{
-			Begin: scopeBegin,
-			End:   scopeEnd,
+			Begin: actualBegin,
+			End:   actualEnd,
 		}
 
 		spans = append(spans, item)
 
-		if scopeEnd == end {
+		if actualEnd == end {
 			return spans, nil
 		}
 
-		scopeBegin = scopeEnd + 1
-		scopeEnd += distance
+		actualBegin = actualEnd + 1
+		actualEnd += distance
 	}
 }
 
