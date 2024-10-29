@@ -65,3 +65,41 @@ func Int[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], err
 		scopeEnd += distance
 	}
 }
+
+// Divides a sequence of integers from begin to end inclusive into spans of the
+// specified width.
+func IntWidth[Type constraints.Integer](begin, end, width Type) ([]Span[Type], error) {
+	if begin > end {
+		return nil, ErrBeginGreaterEnd
+	}
+
+	if width < 0 {
+		return nil, ErrSpanWidthNegative
+	}
+
+	if width == 0 {
+		return nil, ErrSpanWidthZero
+	}
+
+	spans := make([]Span[Type], safe.IncStepSize(begin, end, width))
+
+	for id, actualBegin := range safe.IncStep(begin, end, width) {
+		actualEnd, err := safe.Add(actualBegin, width-1)
+		if err != nil {
+			actualEnd = end
+		}
+
+		if actualEnd > end {
+			actualEnd = end
+		}
+
+		span := Span[Type]{
+			Begin: actualBegin,
+			End:   actualEnd,
+		}
+
+		spans[id] = span
+	}
+
+	return spans, nil
+}
