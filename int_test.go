@@ -146,3 +146,31 @@ func TestIntWidthError(t *testing.T) {
 	require.Error(t, err)
 	require.Equal(t, []Span[int](nil), spans)
 }
+
+func BenchmarkInt(b *testing.B) {
+	var (
+		spans []Span[int]
+		err   error
+	)
+
+	for range b.N {
+		spans, err = Int(1, 2, 2)
+	}
+
+	require.NotNil(b, spans)
+	require.NoError(b, err)
+}
+
+func BenchmarkIntWidth(b *testing.B) {
+	var (
+		spans []Span[int]
+		err   error
+	)
+
+	for range b.N {
+		spans, err = IntWidth(1, 2, 1)
+	}
+
+	require.NotNil(b, spans)
+	require.NoError(b, err)
+}
