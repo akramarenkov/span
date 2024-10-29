@@ -26,19 +26,11 @@ func TestInt(t *testing.T) {
 
 	spans, err = Int[int8](math.MinInt8, math.MaxInt8, 1)
 	require.NoError(t, err)
-	require.Equal(
-		t,
-		[]Span[int8]{{math.MinInt8, math.MaxInt8}},
-		spans,
-	)
+	require.Equal(t, []Span[int8]{{math.MinInt8, math.MaxInt8}}, spans)
 
 	spans, err = Int[int8](math.MinInt8, math.MaxInt8, 2)
 	require.NoError(t, err)
-	require.Equal(
-		t,
-		[]Span[int8]{{math.MinInt8, -1}, {0, math.MaxInt8}},
-		spans,
-	)
+	require.Equal(t, []Span[int8]{{math.MinInt8, -1}, {0, math.MaxInt8}}, spans)
 }
 
 func TestIntError(t *testing.T) {

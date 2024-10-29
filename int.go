@@ -6,7 +6,7 @@ import (
 )
 
 // Divides a sequence of integers from begin to end inclusive into spans.
-func Int[Type constraints.Integer](begin Type, end Type, quantity Type) ([]Span[Type], error) {
+func Int[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], error) {
 	if begin > end {
 		return nil, ErrBeginGreaterEnd
 	}
@@ -20,13 +20,7 @@ func Int[Type constraints.Integer](begin Type, end Type, quantity Type) ([]Span[
 	}
 
 	if quantity == 1 {
-		spans := []Span[Type]{
-			{
-				Begin: begin,
-				End:   end,
-			},
-		}
-
+		spans := []Span[Type]{{Begin: begin, End: end}}
 		return spans, nil
 	}
 
