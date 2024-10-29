@@ -5,7 +5,7 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-// Divides a sequence of integers evenly from start to end inclusive into a specified
+// Divides a sequence of integers evenly from begin to end inclusive into a specified
 // quantity of spans.
 func Int[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], error) {
 	if begin > end {
