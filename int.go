@@ -116,7 +116,7 @@ func intDistance[Type constraints.Integer](begin, end, quantity Type) (Type, Typ
 // If begin is greater than end, the sequence will be considered decreasing,
 // otherwise - increasing.
 //
-// If a zero or negative width is specified, an error is returned.
+// If a zero or negative width of span is specified, an error is returned.
 func IntWidth[Type constraints.Integer](begin, end, width Type) ([]Span[Type], error) {
 	if width < 0 {
 		return nil, ErrSpanWidthNegative
