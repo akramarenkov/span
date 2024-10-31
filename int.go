@@ -68,11 +68,10 @@ func Int[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], err
 
 // Divides a sequence of integers from begin to end inclusive into spans of the
 // specified width.
+//
+// If begin is greater than end, the sequence will be considered decreasing,
+// otherwise - increasing.
 func IntWidth[Type constraints.Integer](begin, end, width Type) ([]Span[Type], error) {
-	if begin > end {
-		return nil, ErrBeginGreaterEnd
-	}
-
 	if width < 0 {
 		return nil, ErrSpanWidthNegative
 	}
@@ -81,21 +80,43 @@ func IntWidth[Type constraints.Integer](begin, end, width Type) ([]Span[Type], e
 		return nil, ErrSpanWidthZero
 	}
 
-	spans := make([]Span[Type], safe.IncStepSize(begin, end, width))
+	spans := make([]Span[Type], safe.StepSize(begin, end, width))
 
-	for id, actualBegin := range safe.IncStep(begin, end, width) {
-		actualEnd, err := safe.Add(actualBegin, width-1)
-		if err != nil {
-			actualEnd = end
+	if begin < end {
+		for id, spanBegin := range safe.Step(begin, end, width) {
+			spanEnd, err := safe.Add(spanBegin, width-1)
+			if err != nil {
+				spanEnd = end
+			}
+
+			if spanEnd > end {
+				spanEnd = end
+			}
+
+			span := Span[Type]{
+				Begin: spanBegin,
+				End:   spanEnd,
+			}
+
+			spans[id] = span
 		}
 
-		if actualEnd > end {
-			actualEnd = end
+		return spans, nil
+	}
+
+	for id, spanBegin := range safe.Step(begin, end, width) {
+		spanEnd, err := safe.Sub(spanBegin, width-1)
+		if err != nil {
+			spanEnd = end
+		}
+
+		if spanEnd < end {
+			spanEnd = end
 		}
 
 		span := Span[Type]{
-			Begin: actualBegin,
-			End:   actualEnd,
+			Begin: spanBegin,
+			End:   spanEnd,
 		}
 
 		spans[id] = span

@@ -68,6 +68,11 @@ func TestIntError(t *testing.T) {
 }
 
 func TestIntWidth(t *testing.T) {
+	testIntWidthIncreasing(t)
+	testIntWidthDecreasing(t)
+}
+
+func testIntWidthIncreasing(t *testing.T) {
 	spans, err := IntWidth[int8](2, 5, 1)
 	require.NoError(t, err)
 	require.Equal(t, []Span[int8]{{2, 2}, {3, 3}, {4, 4}, {5, 5}}, spans)
@@ -133,12 +138,70 @@ func TestIntWidth(t *testing.T) {
 	)
 }
 
-func TestIntWidthError(t *testing.T) {
-	spans, err := IntWidth(2, 1, 1)
-	require.Error(t, err)
-	require.Equal(t, []Span[int](nil), spans)
+func testIntWidthDecreasing(t *testing.T) {
+	spans, err := IntWidth[int8](5, 2, 1)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{5, 5}, {4, 4}, {3, 3}, {2, 2}}, spans)
 
-	spans, err = IntWidth(1, 2, -1)
+	spans, err = IntWidth[int8](6, 2, 5)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{6, 2}}, spans)
+
+	spans, err = IntWidth[int8](16, 2, 5)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{16, 12}, {11, 7}, {6, 2}}, spans)
+
+	spans, err = IntWidth[int8](17, 2, 5)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{17, 13}, {12, 8}, {7, 3}, {2, 2}}, spans)
+
+	spans, err = IntWidth[int8](18, 2, 5)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{18, 14}, {13, 9}, {8, 4}, {3, 2}}, spans)
+
+	spans, err = IntWidth[int8](19, 2, 5)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{19, 15}, {14, 10}, {9, 5}, {4, 2}}, spans)
+
+	spans, err = IntWidth[int8](math.MinInt8+14, math.MinInt8, 5)
+	require.NoError(t, err)
+	require.Equal(
+		t,
+		[]Span[int8]{
+			{math.MinInt8 + 14, math.MinInt8 + 10},
+			{math.MinInt8 + 9, math.MinInt8 + 5},
+			{math.MinInt8 + 4, math.MinInt8},
+		},
+		spans,
+	)
+
+	spans, err = IntWidth[int8](math.MinInt8+15, math.MinInt8, 5)
+	require.NoError(t, err)
+	require.Equal(
+		t,
+		[]Span[int8]{
+			{math.MinInt8 + 15, math.MinInt8 + 11},
+			{math.MinInt8 + 10, math.MinInt8 + 6},
+			{math.MinInt8 + 5, math.MinInt8 + 1},
+			{math.MinInt8, math.MinInt8}},
+		spans,
+	)
+
+	spans, err = IntWidth[int8](math.MinInt8+16, math.MinInt8, 5)
+	require.NoError(t, err)
+	require.Equal(
+		t,
+		[]Span[int8]{
+			{math.MinInt8 + 16, math.MinInt8 + 12},
+			{math.MinInt8 + 11, math.MinInt8 + 7},
+			{math.MinInt8 + 6, math.MinInt8 + 2},
+			{math.MinInt8 + 1, math.MinInt8}},
+		spans,
+	)
+}
+
+func TestIntWidthError(t *testing.T) {
+	spans, err := IntWidth(1, 2, -1)
 	require.Error(t, err)
 	require.Equal(t, []Span[int](nil), spans)
 
