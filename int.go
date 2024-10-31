@@ -5,8 +5,8 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-// Divides a sequence of integers evenly from begin to end inclusive into a specified
-// quantity of spans.
+// Divides a linear sequence of integers evenly from begin to end inclusive into a
+// specified quantity of spans.
 //
 // If begin is greater than end, the sequence will be considered decreasing,
 // otherwise - increasing.
@@ -108,7 +108,7 @@ func intDistance[Type constraints.Integer](begin, end, quantity Type) (Type, Typ
 	return distance, remainder
 }
 
-// Divides a sequence of integers from begin to end inclusive into spans of the
+// Divides a linear sequence of integers from begin to end inclusive into spans of the
 // specified width.
 //
 // If begin is greater than end, the sequence will be considered decreasing,
