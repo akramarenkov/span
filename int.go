@@ -7,11 +7,10 @@ import (
 
 // Divides a sequence of integers evenly from begin to end inclusive into a specified
 // quantity of spans.
+//
+// If begin is greater than end, the sequence will be considered decreasing,
+// otherwise - increasing.
 func Int[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], error) {
-	if begin > end {
-		return nil, ErrBeginGreaterEnd
-	}
-
 	if quantity < 0 {
 		return nil, ErrSpansQuantityNegative
 	}
@@ -25,16 +24,80 @@ func Int[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], err
 		return spans, nil
 	}
 
-	// Overflow is not possible with these operations given the checks on the values
-	// ​​of the input arguments located above
-	distance, _ := safe.SubDiv(end, begin, quantity)
-	remainder, _ := safe.SubDivRem(end, begin, quantity)
+	distance, remainder := intDistance(begin, end, quantity)
 
-	// +1 due to the constant presence of begin in the sequence
-	//
-	// Overflow on this operation is impossible because maximum value of remainder is
-	// maximum value of the divisor minus one and at positive divisor is maximum value
-	// for given type minus one
+	spans := make([]Span[Type], 0, quantity)
+
+	if begin < end {
+		for spanBegin, spanEnd := begin, begin+distance-1; ; {
+			if remainder != 0 {
+				spanEnd++
+				remainder--
+			}
+
+			span := Span[Type]{
+				Begin: spanBegin,
+				End:   spanEnd,
+			}
+
+			spans = append(spans, span)
+
+			if spanEnd == end {
+				return spans, nil
+			}
+
+			spanBegin = spanEnd + 1
+			spanEnd += distance
+		}
+	}
+
+	for spanBegin, spanEnd := begin, begin-distance+1; ; {
+		if remainder != 0 {
+			spanEnd--
+			remainder--
+		}
+
+		span := Span[Type]{
+			Begin: spanBegin,
+			End:   spanEnd,
+		}
+
+		spans = append(spans, span)
+
+		if spanEnd == end {
+			return spans, nil
+		}
+
+		spanBegin = spanEnd - 1
+		spanEnd -= distance
+	}
+}
+
+func intDistance[Type constraints.Integer](begin, end, quantity Type) (Type, Type) {
+	if begin < end {
+		// Overflow is not possible with these operations given the checks on the values
+		// ​​of the input arguments located above in the calling function
+		distance, _ := safe.SubDiv(end, begin, quantity)
+		remainder, _ := safe.SubDivRem(end, begin, quantity)
+
+		// +1 due to the constant presence of begin in the sequence
+		//
+		// Overflow on this operation is impossible because maximum value of remainder
+		// is maximum value of the divisor minus one and at positive divisor is maximum
+		// value for given type minus one
+		remainder++
+
+		if distance == 0 {
+			distance = 1
+			remainder = 0
+		}
+
+		return distance, remainder
+	}
+
+	distance, _ := safe.SubDiv(begin, end, quantity)
+	remainder, _ := safe.SubDivRem(begin, end, quantity)
+
 	remainder++
 
 	if distance == 0 {
@@ -42,28 +105,7 @@ func Int[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], err
 		remainder = 0
 	}
 
-	spans := make([]Span[Type], 0, quantity)
-
-	for actualBegin, actualEnd := begin, begin+distance-1; ; {
-		if remainder != 0 {
-			actualEnd++
-			remainder--
-		}
-
-		item := Span[Type]{
-			Begin: actualBegin,
-			End:   actualEnd,
-		}
-
-		spans = append(spans, item)
-
-		if actualEnd == end {
-			return spans, nil
-		}
-
-		actualBegin = actualEnd + 1
-		actualEnd += distance
-	}
+	return distance, remainder
 }
 
 // Divides a sequence of integers from begin to end inclusive into spans of the
