@@ -22,7 +22,7 @@ import (
 )
 
 func main() {
-    spans, err := span.Int(1, 8, 3)
+    spans, err := span.Evenly(1, 8, 3)
     fmt.Println(err)
     fmt.Println(spans)
     // Output:
