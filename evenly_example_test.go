@@ -6,8 +6,8 @@ import (
 	"github.com/akramarenkov/span"
 )
 
-func ExampleInt() {
-	spans, err := span.Int(1, 8, 3)
+func ExampleEvenly() {
+	spans, err := span.Evenly(1, 8, 3)
 	fmt.Println(err)
 	fmt.Println(spans)
 	// Output:

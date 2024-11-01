@@ -12,7 +12,7 @@ import (
 // otherwise - increasing.
 //
 // If a zero or negative quantity of spans is specified, an error is returned.
-func Int[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], error) {
+func Evenly[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], error) {
 	if quantity < 0 {
 		return nil, ErrSpansQuantityNegative
 	}
@@ -26,7 +26,7 @@ func Int[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], err
 		return spans, nil
 	}
 
-	distance, remainder := intDistance(begin, end, quantity)
+	distance, remainder := evenlyDistance(begin, end, quantity)
 
 	spans := make([]Span[Type], 0, quantity)
 
@@ -75,7 +75,7 @@ func Int[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], err
 	}
 }
 
-func intDistance[Type constraints.Integer](begin, end, quantity Type) (Type, Type) {
+func evenlyDistance[Type constraints.Integer](begin, end, quantity Type) (Type, Type) {
 	if begin < end {
 		// Overflow is not possible with these operations given the checks on the values
 		// ​​of the input arguments located above in the calling function
@@ -108,65 +108,4 @@ func intDistance[Type constraints.Integer](begin, end, quantity Type) (Type, Typ
 	}
 
 	return distance, remainder
-}
-
-// Divides a linear sequence of integers from begin to end inclusive into spans of the
-// specified width.
-//
-// If begin is greater than end, the sequence will be considered decreasing,
-// otherwise - increasing.
-//
-// If a zero or negative width of span is specified, an error is returned.
-func IntWidth[Type constraints.Integer](begin, end, width Type) ([]Span[Type], error) {
-	if width < 0 {
-		return nil, ErrSpanWidthNegative
-	}
-
-	if width == 0 {
-		return nil, ErrSpanWidthZero
-	}
-
-	spans := make([]Span[Type], safe.StepSize(begin, end, width))
-
-	if begin < end {
-		for id, spanBegin := range safe.Step(begin, end, width) {
-			spanEnd, err := safe.Add(spanBegin, width-1)
-			if err != nil {
-				spanEnd = end
-			}
-
-			if spanEnd > end {
-				spanEnd = end
-			}
-
-			span := Span[Type]{
-				Begin: spanBegin,
-				End:   spanEnd,
-			}
-
-			spans[id] = span
-		}
-
-		return spans, nil
-	}
-
-	for id, spanBegin := range safe.Step(begin, end, width) {
-		spanEnd, err := safe.Sub(spanBegin, width-1)
-		if err != nil {
-			spanEnd = end
-		}
-
-		if spanEnd < end {
-			spanEnd = end
-		}
-
-		span := Span[Type]{
-			Begin: spanBegin,
-			End:   spanEnd,
-		}
-
-		spans[id] = span
-	}
-
-	return spans, nil
 }
