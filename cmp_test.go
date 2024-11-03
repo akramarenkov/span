@@ -1,0 +1,57 @@
+package span
+
+import (
+	"slices"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+)
+
+func TestCompareInc(t *testing.T) {
+	expected := []Span[int]{{2, 6}, {7, 11}, {12, 16}}
+	actual := []Span[int]{{12, 16}, {2, 6}, {7, 11}}
+
+	require.NotEqual(t, expected, actual)
+	slices.SortFunc(actual, CompareInc)
+	require.Equal(t, expected, actual)
+
+	intersect := []Span[int]{{2, 2}, {2, 2}, {2, 2}}
+	require.Panics(t, func() { slices.SortFunc(intersect, CompareInc) })
+}
+
+func TestCompareDec(t *testing.T) {
+	expected := []Span[int]{{16, 12}, {11, 7}, {6, 2}}
+	actual := []Span[int]{{6, 2}, {16, 12}, {11, 7}}
+
+	require.NotEqual(t, expected, actual)
+	slices.SortFunc(actual, CompareDec)
+	require.Equal(t, expected, actual)
+
+	intersect := []Span[int]{{2, 2}, {2, 2}, {2, 2}}
+	require.Panics(t, func() { slices.SortFunc(intersect, CompareDec) })
+}
+
+func TestCompare(t *testing.T) {
+	expectedInc := []Span[int]{{2, 6}, {7, 11}, {12, 16}}
+	actualInc := []Span[int]{{12, 16}, {2, 6}, {7, 11}}
+
+	expectedDec := []Span[int]{{16, 12}, {11, 7}, {6, 2}}
+	actualDec := []Span[int]{{6, 2}, {16, 12}, {11, 7}}
+
+	require.NotEqual(t, expectedInc, actualInc)
+	slices.SortFunc(actualInc, Compare)
+	require.Equal(t, expectedInc, actualInc)
+
+	require.NotEqual(t, expectedDec, actualDec)
+	slices.SortFunc(actualDec, Compare)
+	require.Equal(t, expectedDec, actualDec)
+
+	intersectInc := []Span[int]{{2, 2}, {2, 2}, {2, 2}}
+	require.Panics(t, func() { slices.SortFunc(intersectInc, Compare) })
+
+	intersectDec := []Span[int]{{2, 2}, {2, 2}, {2, 2}}
+	require.Panics(t, func() { slices.SortFunc(intersectDec, Compare) })
+
+	difference := []Span[int]{{16, 6}, {7, 11}, {6, 2}}
+	require.Panics(t, func() { slices.SortFunc(difference, Compare) })
+}
