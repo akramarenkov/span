@@ -10,9 +10,10 @@ import (
 func TestCompareInc(t *testing.T) {
 	expected := []Span[int]{{2, 6}, {7, 11}, {12, 16}}
 	actual := []Span[int]{{12, 16}, {2, 6}, {7, 11}}
-	intersect := []Span[int]{{2, 2}, {2, 2}, {2, 2}}
+	intersect := []Span[int]{{1, 2}, {2, 3}, {1, 2}}
 
 	require.NotEqual(t, expected, actual)
+
 	slices.SortFunc(actual, CompareInc)
 	require.Equal(t, expected, actual)
 
@@ -22,9 +23,10 @@ func TestCompareInc(t *testing.T) {
 func TestCompareDec(t *testing.T) {
 	expected := []Span[int]{{16, 12}, {11, 7}, {6, 2}}
 	actual := []Span[int]{{6, 2}, {16, 12}, {11, 7}}
-	intersect := []Span[int]{{2, 2}, {2, 2}, {2, 2}}
+	intersect := []Span[int]{{2, 1}, {3, 2}, {4, 2}}
 
 	require.NotEqual(t, expected, actual)
+
 	slices.SortFunc(actual, CompareDec)
 	require.Equal(t, expected, actual)
 
@@ -38,15 +40,16 @@ func TestCompare(t *testing.T) {
 	expectedDec := []Span[int]{{16, 12}, {11, 7}, {6, 2}}
 	actualDec := []Span[int]{{6, 2}, {16, 12}, {11, 7}}
 
-	intersectInc := []Span[int]{{2, 2}, {2, 2}, {2, 2}}
-	intersectDec := []Span[int]{{2, 2}, {2, 2}, {2, 2}}
+	intersectInc := []Span[int]{{1, 2}, {2, 3}, {1, 2}}
+	intersectDec := []Span[int]{{2, 1}, {3, 2}, {4, 2}}
 	difference := []Span[int]{{16, 6}, {7, 11}, {6, 2}}
 
 	require.NotEqual(t, expectedInc, actualInc)
+	require.NotEqual(t, expectedDec, actualDec)
+
 	slices.SortFunc(actualInc, Compare)
 	require.Equal(t, expectedInc, actualInc)
 
-	require.NotEqual(t, expectedDec, actualDec)
 	slices.SortFunc(actualDec, Compare)
 	require.Equal(t, expectedDec, actualDec)
 

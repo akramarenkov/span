@@ -56,6 +56,8 @@ func Compare[Type constraints.Ordered](first, second Span[Type]) int {
 		case first.End < second.Begin:
 			return 1
 		}
+
+		panic(ErrSpansIntersect)
 	}
 
 	panic(ErrSpansDiffSequenceType)
