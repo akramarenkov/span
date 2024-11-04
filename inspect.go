@@ -9,6 +9,8 @@ const (
 	significantSpansQuantity = 2
 )
 
+// Checks that a sequence of spans does not contain spans with different sequence types
+// (increasing or decreasing).
 func IsNotDiffSequencing[Type constraints.Ordered](spans []Span[Type]) error {
 	if len(spans) < significantSpansQuantity {
 		return nil
@@ -37,6 +39,7 @@ func isTwoSpansNotDiffSequencing[Type constraints.Ordered](first, second Span[Ty
 	return nil
 }
 
+// Checks that a spans sequence consists of only increasing spans.
 func IsIncreasing[Type constraints.Ordered](spans []Span[Type]) error {
 	if len(spans) == 0 {
 		return ErrSpansUnexpectedSequencing
@@ -51,6 +54,7 @@ func IsIncreasing[Type constraints.Ordered](spans []Span[Type]) error {
 	return nil
 }
 
+// Checks that a spans sequence consists of only decreasing spans.
 func IsDecreasing[Type constraints.Ordered](spans []Span[Type]) error {
 	if len(spans) == 0 {
 		return ErrSpansUnexpectedSequencing
@@ -65,6 +69,7 @@ func IsDecreasing[Type constraints.Ordered](spans []Span[Type]) error {
 	return nil
 }
 
+// Checks that a sequence of spans does not contain intersect spans.
 func IsNotIntersect[Type constraints.Ordered](spans []Span[Type]) error {
 	if len(spans) < significantSpansQuantity {
 		return nil
@@ -113,6 +118,8 @@ func isTwoSpansNotIntersect[Type constraints.Ordered](first, second Span[Type]) 
 	return nil
 }
 
+// Checks that a sequence of spans is continuous and monotone and does not contain
+// intersecting spans.
 func IsContinuous[Type constraints.Integer](spans []Span[Type]) error {
 	if len(spans) < significantSpansQuantity {
 		return nil
