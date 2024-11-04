@@ -118,7 +118,7 @@ func isTwoSpansNotIntersect[Type constraints.Ordered](first, second Span[Type]) 
 	return nil
 }
 
-// Checks that a sequence of spans is continuous and monotone and does not contain
+// Checks that a sequence of spans is continuous, monotone and does not contain
 // intersecting spans.
 func IsContinuous[Type constraints.Integer](spans []Span[Type]) error {
 	if len(spans) < significantSpansQuantity {
