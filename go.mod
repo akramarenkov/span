@@ -3,7 +3,7 @@ module github.com/akramarenkov/span
 go 1.23
 
 require (
-	github.com/akramarenkov/safe v0.15.4
+	github.com/akramarenkov/safe v0.16.0
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/exp v0.0.0-20240707233637-46b078467d37
 )

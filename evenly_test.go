@@ -2,8 +2,10 @@ package span
 
 import (
 	"math"
+	"slices"
 	"testing"
 
+	"github.com/akramarenkov/safe"
 	"github.com/stretchr/testify/require"
 )
 
@@ -108,6 +110,134 @@ func TestEvenlyError(t *testing.T) {
 	spans, err = Evenly(1, 2, 0)
 	require.Error(t, err)
 	require.Equal(t, []Span[int](nil), spans)
+}
+
+func TestEvenlyInspect(t *testing.T) {
+	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+			for quantity := range safe.Inc[int8](1, math.MaxInt8) {
+				spans, err := Evenly(begin, end, quantity)
+				if err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, quantity: %v",
+						begin,
+						end,
+						quantity,
+					)
+				}
+
+				// conditions are duplicated to performance reasons
+				if err := IsContinuous(spans); err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, quantity: %v",
+						begin,
+						end,
+						quantity,
+					)
+				}
+			}
+		}
+	}
+
+	for begin := range safe.Inc[uint8](0, math.MaxUint8) {
+		for end := range safe.Inc[uint8](0, math.MaxUint8) {
+			for quantity := range safe.Inc[uint8](1, math.MaxUint8) {
+				spans, err := Evenly(begin, end, quantity)
+				if err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, quantity: %v",
+						begin,
+						end,
+						quantity,
+					)
+				}
+
+				if err := IsContinuous(spans); err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, quantity: %v",
+						begin,
+						end,
+						quantity,
+					)
+				}
+			}
+		}
+	}
+}
+
+func TestEvenlyIsSorted(t *testing.T) {
+	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+			for quantity := range safe.Inc[int8](1, math.MaxInt8) {
+				spans, err := Evenly(begin, end, quantity)
+				if err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, quantity: %v",
+						begin,
+						end,
+						quantity,
+					)
+				}
+
+				if sorted := slices.IsSortedFunc(spans, Compare); !sorted {
+					require.True(
+						t,
+						sorted,
+						"begin: %v, end: %v, quantity: %v",
+						begin,
+						end,
+						quantity,
+					)
+				}
+			}
+		}
+	}
+}
+
+func TestEvenlyIsSortedSelective(t *testing.T) {
+	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+			for quantity := range safe.Inc[int8](1, math.MaxInt8) {
+				spans, err := Evenly(begin, end, quantity)
+				if err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, quantity: %v",
+						begin,
+						end,
+						quantity,
+					)
+				}
+
+				cmp := CompareInc[int8]
+				if begin > end {
+					cmp = CompareDec[int8]
+				}
+
+				if sorted := slices.IsSortedFunc(spans, cmp); !sorted {
+					require.True(
+						t,
+						sorted,
+						"begin: %v, end: %v, quantity: %v",
+						begin,
+						end,
+						quantity,
+					)
+				}
+			}
+		}
+	}
 }
 
 func BenchmarkEvenly(b *testing.B) {

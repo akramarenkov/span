@@ -2,8 +2,10 @@ package span
 
 import (
 	"math"
+	"slices"
 	"testing"
 
+	"github.com/akramarenkov/safe"
 	"github.com/stretchr/testify/require"
 )
 
@@ -148,6 +150,134 @@ func TestLinearError(t *testing.T) {
 	spans, err = Linear(1, 2, 0)
 	require.Error(t, err)
 	require.Equal(t, []Span[int](nil), spans)
+}
+
+func TestLinearInspect(t *testing.T) {
+	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+			for width := range safe.Inc[int8](1, math.MaxInt8) {
+				spans, err := Linear(begin, end, width)
+				if err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, width: %v",
+						begin,
+						end,
+						width,
+					)
+				}
+
+				// conditions are duplicated to performance reasons
+				if err := IsContinuous(spans); err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, width: %v",
+						begin,
+						end,
+						width,
+					)
+				}
+			}
+		}
+	}
+
+	for begin := range safe.Inc[uint8](0, math.MaxUint8) {
+		for end := range safe.Inc[uint8](0, math.MaxUint8) {
+			for width := range safe.Inc[uint8](1, math.MaxUint8) {
+				spans, err := Linear(begin, end, width)
+				if err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, width: %v",
+						begin,
+						end,
+						width,
+					)
+				}
+
+				if err := IsContinuous(spans); err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, width: %v",
+						begin,
+						end,
+						width,
+					)
+				}
+			}
+		}
+	}
+}
+
+func TestLinearIsSorted(t *testing.T) {
+	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+			for width := range safe.Inc[int8](1, math.MaxInt8) {
+				spans, err := Linear(begin, end, width)
+				if err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, width: %v",
+						begin,
+						end,
+						width,
+					)
+				}
+
+				if sorted := slices.IsSortedFunc(spans, Compare); !sorted {
+					require.True(
+						t,
+						sorted,
+						"begin: %v, end: %v, width: %v",
+						begin,
+						end,
+						width,
+					)
+				}
+			}
+		}
+	}
+}
+
+func TestLinearIsSortedSelective(t *testing.T) {
+	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+			for width := range safe.Inc[int8](1, math.MaxInt8) {
+				spans, err := Linear(begin, end, width)
+				if err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, width: %v",
+						begin,
+						end,
+						width,
+					)
+				}
+
+				cmp := CompareInc[int8]
+				if begin > end {
+					cmp = CompareDec[int8]
+				}
+
+				if sorted := slices.IsSortedFunc(spans, cmp); !sorted {
+					require.True(
+						t,
+						sorted,
+						"begin: %v, end: %v, width: %v",
+						begin,
+						end,
+						width,
+					)
+				}
+			}
+		}
+	}
 }
 
 func BenchmarkLinear(b *testing.B) {
