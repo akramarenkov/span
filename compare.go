@@ -46,40 +46,6 @@ func CompareDec[Type constraints.Ordered](first, second Span[Type]) int {
 	panic(ErrSpansIntersect)
 }
 
-// Compare function for sorting of sequence of spans.
-//
-// Partially detects spans intersections, but does not guarantee complete verification.
-//
-// Partially detects the presence of different types of span sequences, but does not
-// guarantee complete verification.
-func Compare[Type constraints.Ordered](first, second Span[Type]) int {
-	switch {
-	case first.Begin == first.End && second.Begin == second.End:
-		// There is no way to determine whether the sequence is increasing or decreasing
-		return 0
-	case first.Begin <= first.End && second.Begin <= second.End:
-		switch {
-		case first.End < second.Begin:
-			return -1
-		case first.Begin > second.End:
-			return 1
-		}
-
-		panic(ErrSpansIntersect)
-	case first.Begin >= first.End && second.Begin >= second.End:
-		switch {
-		case first.End > second.Begin:
-			return -1
-		case first.Begin < second.End:
-			return 1
-		}
-
-		panic(ErrSpansIntersect)
-	}
-
-	panic(ErrSpansDiffSequencing)
-}
-
 // Compare function for searching in increasing sequence of spans.
 //
 // Partially detects the presence of different types of span sequences, but does not

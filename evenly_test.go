@@ -189,37 +189,6 @@ func TestEvenlyIsSorted(t *testing.T) {
 					)
 				}
 
-				if sorted := slices.IsSortedFunc(spans, Compare); !sorted {
-					require.True(
-						t,
-						sorted,
-						"begin: %v, end: %v, quantity: %v",
-						begin,
-						end,
-						quantity,
-					)
-				}
-			}
-		}
-	}
-}
-
-func TestEvenlyIsSortedSelective(t *testing.T) {
-	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
-		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
-			for quantity := range safe.Inc[int8](1, math.MaxInt8) {
-				spans, err := Evenly(begin, end, quantity)
-				if err != nil {
-					require.NoError(
-						t,
-						err,
-						"begin: %v, end: %v, quantity: %v",
-						begin,
-						end,
-						quantity,
-					)
-				}
-
 				cmp := CompareInc[int8]
 
 				if begin > end {

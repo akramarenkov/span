@@ -229,37 +229,6 @@ func TestLinearIsSorted(t *testing.T) {
 					)
 				}
 
-				if sorted := slices.IsSortedFunc(spans, Compare); !sorted {
-					require.True(
-						t,
-						sorted,
-						"begin: %v, end: %v, width: %v",
-						begin,
-						end,
-						width,
-					)
-				}
-			}
-		}
-	}
-}
-
-func TestLinearIsSortedSelective(t *testing.T) {
-	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
-		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
-			for width := range safe.Inc[int8](1, math.MaxInt8) {
-				spans, err := Linear(begin, end, width)
-				if err != nil {
-					require.NoError(
-						t,
-						err,
-						"begin: %v, end: %v, width: %v",
-						begin,
-						end,
-						width,
-					)
-				}
-
 				cmp := CompareInc[int8]
 
 				if begin > end {
