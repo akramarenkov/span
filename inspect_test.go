@@ -125,29 +125,77 @@ func TestIsTwoSpansContinuous(t *testing.T) {
 	require.NoError(t, isTwoSpansContinuous(Span[int]{0, 1}, Span[int]{-2, -1}))
 	require.NoError(t, isTwoSpansContinuous(Span[int]{1, 0}, Span[int]{-1, -2}))
 	require.NoError(t, isTwoSpansContinuous(Span[int]{-1, -2}, Span[int]{1, 0}))
-	require.NoError(t, isTwoSpansContinuous(Span[int]{math.MinInt, math.MaxInt - 1}, Span[int]{math.MaxInt, math.MaxInt}))
-	require.NoError(t, isTwoSpansContinuous(Span[int]{math.MaxInt, math.MaxInt}, Span[int]{math.MinInt, math.MaxInt - 1}))
+	require.NoError(
+		t,
+		isTwoSpansContinuous(
+			Span[int]{math.MinInt, math.MaxInt - 1},
+			Span[int]{math.MaxInt, math.MaxInt},
+		),
+	)
+	require.NoError(
+		t,
+		isTwoSpansContinuous(
+			Span[int]{math.MaxInt, math.MaxInt},
+			Span[int]{math.MinInt, math.MaxInt - 1},
+		),
+	)
 
 	require.NoError(t, isTwoSpansContinuous(Span[uint]{1, 2}, Span[uint]{3, 4}))
 	require.NoError(t, isTwoSpansContinuous(Span[uint]{3, 4}, Span[uint]{1, 2}))
 	require.NoError(t, isTwoSpansContinuous(Span[uint]{4, 3}, Span[uint]{2, 1}))
 	require.NoError(t, isTwoSpansContinuous(Span[uint]{2, 1}, Span[uint]{4, 3}))
-	require.NoError(t, isTwoSpansContinuous(Span[uint]{0, math.MaxUint - 1}, Span[uint]{math.MaxUint, math.MaxUint}))
-	require.NoError(t, isTwoSpansContinuous(Span[uint]{math.MaxUint, math.MaxUint}, Span[uint]{0, math.MaxUint - 1}))
+	require.NoError(
+		t,
+		isTwoSpansContinuous(
+			Span[uint]{0, math.MaxUint - 1},
+			Span[uint]{math.MaxUint, math.MaxUint},
+		),
+	)
+	require.NoError(
+		t,
+		isTwoSpansContinuous(
+			Span[uint]{math.MaxUint, math.MaxUint},
+			Span[uint]{0, math.MaxUint - 1},
+		),
+	)
 
 	require.Error(t, isTwoSpansContinuous(Span[int]{-2, -1}, Span[int]{1, 2}))
 	require.Error(t, isTwoSpansContinuous(Span[int]{1, 2}, Span[int]{-2, -1}))
 	require.Error(t, isTwoSpansContinuous(Span[int]{2, 1}, Span[int]{-1, -2}))
 	require.Error(t, isTwoSpansContinuous(Span[int]{-1, -2}, Span[int]{2, 1}))
-	require.Error(t, isTwoSpansContinuous(Span[int]{math.MinInt, math.MaxInt - 2}, Span[int]{math.MaxInt, math.MaxInt}))
-	require.Error(t, isTwoSpansContinuous(Span[int]{math.MaxInt, math.MaxInt}, Span[int]{math.MinInt, math.MaxInt - 2}))
+	require.Error(
+		t,
+		isTwoSpansContinuous(
+			Span[int]{math.MinInt, math.MaxInt - 2},
+			Span[int]{math.MaxInt, math.MaxInt},
+		),
+	)
+	require.Error(
+		t,
+		isTwoSpansContinuous(
+			Span[int]{math.MaxInt, math.MaxInt},
+			Span[int]{math.MinInt, math.MaxInt - 2},
+		),
+	)
 
 	require.Error(t, isTwoSpansContinuous(Span[uint]{0, 1}, Span[uint]{3, 4}))
 	require.Error(t, isTwoSpansContinuous(Span[uint]{3, 4}, Span[uint]{0, 1}))
 	require.Error(t, isTwoSpansContinuous(Span[uint]{4, 3}, Span[uint]{1, 0}))
 	require.Error(t, isTwoSpansContinuous(Span[uint]{1, 0}, Span[uint]{4, 3}))
-	require.Error(t, isTwoSpansContinuous(Span[uint]{0, math.MaxUint - 2}, Span[uint]{math.MaxUint, math.MaxUint}))
-	require.Error(t, isTwoSpansContinuous(Span[uint]{math.MaxUint, math.MaxUint}, Span[uint]{0, math.MaxUint - 2}))
+	require.Error(
+		t,
+		isTwoSpansContinuous(
+			Span[uint]{0, math.MaxUint - 2},
+			Span[uint]{math.MaxUint, math.MaxUint},
+		),
+	)
+	require.Error(
+		t,
+		isTwoSpansContinuous(
+			Span[uint]{math.MaxUint, math.MaxUint},
+			Span[uint]{0, math.MaxUint - 2},
+		),
+	)
 
 	require.Error(t, isTwoSpansContinuous(Span[int]{1, 2}, Span[int]{4, 3}))
 	require.Error(t, isTwoSpansContinuous(Span[int]{1, 2}, Span[int]{1, 3}))

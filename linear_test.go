@@ -152,7 +152,7 @@ func TestLinearError(t *testing.T) {
 	require.Equal(t, []Span[int](nil), spans)
 }
 
-func TestLinearInspect(t *testing.T) {
+func TestLinearIsContinuous(t *testing.T) {
 	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
 		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
 			for width := range safe.Inc[int8](1, math.MaxInt8) {
@@ -261,6 +261,7 @@ func TestLinearIsSortedSelective(t *testing.T) {
 				}
 
 				cmp := CompareInc[int8]
+
 				if begin > end {
 					cmp = CompareDec[int8]
 				}

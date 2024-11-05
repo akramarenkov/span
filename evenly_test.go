@@ -112,7 +112,7 @@ func TestEvenlyError(t *testing.T) {
 	require.Equal(t, []Span[int](nil), spans)
 }
 
-func TestEvenlyInspect(t *testing.T) {
+func TestEvenlyIsContinuous(t *testing.T) {
 	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
 		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
 			for quantity := range safe.Inc[int8](1, math.MaxInt8) {
@@ -221,6 +221,7 @@ func TestEvenlyIsSortedSelective(t *testing.T) {
 				}
 
 				cmp := CompareInc[int8]
+
 				if begin > end {
 					cmp = CompareDec[int8]
 				}
