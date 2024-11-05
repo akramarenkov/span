@@ -8,11 +8,33 @@ import (
 )
 
 func TestCompareInc(t *testing.T) {
-	expected := []Span[int]{{2, 6}, {7, 11}, {12, 16}}
-	actual := []Span[int]{{12, 16}, {2, 6}, {7, 11}}
+	testCompareFunc(
+		t,
+		CompareInc,
+		[]Span[int]{{2, 6}, {7, 11}, {12, 16}},
+		[]Span[int]{{12, 16}, {2, 6}, {7, 11}},
+	)
 
-	slices.SortFunc(actual, CompareInc)
-	require.Equal(t, expected, actual)
+	testCompareFunc(
+		t,
+		CompareInc,
+		[]Span[int]{{2, 6}, {8, 12}, {13, 17}},
+		[]Span[int]{{13, 17}, {2, 6}, {8, 12}},
+	)
+
+	testCompareFunc(
+		t,
+		CompareInc,
+		[]Span[int]{{2, 6}, {8, 12}, {14, 18}},
+		[]Span[int]{{14, 18}, {2, 6}, {8, 12}},
+	)
+
+	testCompareFunc(
+		t,
+		CompareInc,
+		[]Span[int]{{2, 6}, {9, 13}, {16, 20}},
+		[]Span[int]{{16, 20}, {2, 6}, {9, 13}},
+	)
 
 	intersect := []Span[int]{{2, 2}, {2, 2}, {2, 2}}
 	differenceSequencing := []Span[int]{{16, 12}, {11, 7}, {6, 2}}
@@ -22,11 +44,33 @@ func TestCompareInc(t *testing.T) {
 }
 
 func TestCompareDec(t *testing.T) {
-	expected := []Span[int]{{16, 12}, {11, 7}, {6, 2}}
-	actual := []Span[int]{{6, 2}, {16, 12}, {11, 7}}
+	testCompareFunc(
+		t,
+		CompareDec,
+		[]Span[int]{{16, 12}, {11, 7}, {6, 2}},
+		[]Span[int]{{6, 2}, {16, 12}, {11, 7}},
+	)
 
-	slices.SortFunc(actual, CompareDec)
-	require.Equal(t, expected, actual)
+	testCompareFunc(
+		t,
+		CompareDec,
+		[]Span[int]{{17, 13}, {12, 8}, {6, 2}},
+		[]Span[int]{{6, 2}, {17, 13}, {12, 8}},
+	)
+
+	testCompareFunc(
+		t,
+		CompareDec,
+		[]Span[int]{{18, 14}, {12, 8}, {6, 2}},
+		[]Span[int]{{6, 2}, {18, 14}, {12, 8}},
+	)
+
+	testCompareFunc(
+		t,
+		CompareDec,
+		[]Span[int]{{20, 16}, {13, 9}, {6, 2}},
+		[]Span[int]{{6, 2}, {20, 16}, {13, 9}},
+	)
 
 	intersect := []Span[int]{{2, 2}, {2, 2}, {2, 2}}
 	differenceSequencing := []Span[int]{{2, 6}, {7, 11}, {12, 16}}
@@ -36,36 +80,68 @@ func TestCompareDec(t *testing.T) {
 }
 
 func TestCompare(t *testing.T) {
-	testCompareIncreasing(t)
-	testCompareDecreasing(t)
-	testCompareUndetermined(t)
-}
+	testCompareFunc(
+		t,
+		Compare,
+		[]Span[int]{{2, 6}, {7, 11}, {12, 16}},
+		[]Span[int]{{12, 16}, {2, 6}, {7, 11}},
+	)
 
-func testCompareIncreasing(t *testing.T) {
-	expected := []Span[int]{{2, 6}, {7, 11}, {12, 16}}
-	actual := []Span[int]{{12, 16}, {2, 6}, {7, 11}}
+	testCompareFunc(
+		t,
+		Compare,
+		[]Span[int]{{2, 6}, {8, 12}, {13, 17}},
+		[]Span[int]{{13, 17}, {2, 6}, {8, 12}},
+	)
 
-	slices.SortFunc(actual, Compare)
-	require.Equal(t, expected, actual)
-}
+	testCompareFunc(
+		t,
+		Compare,
+		[]Span[int]{{2, 6}, {8, 12}, {14, 18}},
+		[]Span[int]{{14, 18}, {2, 6}, {8, 12}},
+	)
 
-func testCompareDecreasing(t *testing.T) {
-	expected := []Span[int]{{16, 12}, {11, 7}, {6, 2}}
-	actual := []Span[int]{{6, 2}, {16, 12}, {11, 7}}
+	testCompareFunc(
+		t,
+		Compare,
+		[]Span[int]{{2, 6}, {9, 13}, {16, 20}},
+		[]Span[int]{{16, 20}, {2, 6}, {9, 13}},
+	)
 
-	slices.SortFunc(actual, Compare)
-	require.Equal(t, expected, actual)
-}
+	testCompareFunc(
+		t,
+		Compare,
+		[]Span[int]{{16, 12}, {11, 7}, {6, 2}},
+		[]Span[int]{{6, 2}, {16, 12}, {11, 7}},
+	)
 
-func testCompareUndetermined(t *testing.T) {
+	testCompareFunc(
+		t,
+		Compare,
+		[]Span[int]{{17, 13}, {12, 8}, {6, 2}},
+		[]Span[int]{{6, 2}, {17, 13}, {12, 8}},
+	)
+
+	testCompareFunc(
+		t,
+		Compare,
+		[]Span[int]{{18, 14}, {12, 8}, {6, 2}},
+		[]Span[int]{{6, 2}, {18, 14}, {12, 8}},
+	)
+
+	testCompareFunc(
+		t,
+		Compare,
+		[]Span[int]{{20, 16}, {13, 9}, {6, 2}},
+		[]Span[int]{{6, 2}, {20, 16}, {13, 9}},
+	)
+
 	expected := []Span[int]{{-127, -127}, {-128, -128}, {-126, -126}}
-	actual := []Span[int]{{-127, -127}, {-128, -128}, {-126, -126}}
+	undetermined := []Span[int]{{-127, -127}, {-128, -128}, {-126, -126}}
 
-	slices.SortFunc(actual, Compare)
-	require.Equal(t, expected, actual)
-}
+	slices.SortFunc(undetermined, Compare)
+	require.Equal(t, expected, undetermined)
 
-func TestComparePanic(t *testing.T) {
 	intersectIncreasing := []Span[int]{{1, 2}, {2, 3}, {1, 2}}
 	intersectDecreasing := []Span[int]{{2, 1}, {3, 2}, {4, 2}}
 	differenceSequencing := []Span[int]{{16, 6}, {7, 11}, {6, 2}}
@@ -73,6 +149,17 @@ func TestComparePanic(t *testing.T) {
 	require.Panics(t, func() { slices.SortFunc(intersectIncreasing, Compare) })
 	require.Panics(t, func() { slices.SortFunc(intersectDecreasing, Compare) })
 	require.Panics(t, func() { slices.SortFunc(differenceSequencing, Compare) })
+}
+
+func testCompareFunc(
+	t *testing.T,
+	compare func(Span[int], Span[int]) int,
+	expected []Span[int],
+	actual []Span[int],
+) {
+	require.NotEqual(t, expected, actual)
+	slices.SortFunc(actual, compare)
+	require.Equal(t, expected, actual)
 }
 
 func TestSearchInc(t *testing.T) {
