@@ -77,8 +77,9 @@ func Evenly[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], 
 
 func evenlyDistance[Type constraints.Integer](begin, end, quantity Type) (Type, Type) {
 	if begin < end {
-		// Overflow is not possible with these operations given the checks on the values
-		// ​​of the input arguments located above in the calling function
+		// Overflow and other errors is not possible with these operations given the
+		// checks on the values ​​of the quantity argument located above in the calling
+		// function
 		distance, _ := safe.SubDiv(end, begin, quantity)
 		remainder, _ := safe.SubDivRem(end, begin, quantity)
 
