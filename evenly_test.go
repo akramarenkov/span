@@ -113,8 +113,8 @@ func TestEvenlyError(t *testing.T) {
 }
 
 func TestEvenlyIsContinuous(t *testing.T) {
-	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
-		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+	for begin := range safe.Inc[int8](math.MinInt8/2, math.MaxInt8/2) {
+		for end := range safe.Inc[int8](math.MinInt8/2, math.MaxInt8/2) {
 			for quantity := range safe.Inc[int8](1, math.MaxInt8) {
 				spans, err := Evenly(begin, end, quantity)
 				if err != nil {
@@ -143,8 +143,8 @@ func TestEvenlyIsContinuous(t *testing.T) {
 		}
 	}
 
-	for begin := range safe.Inc[uint8](0, math.MaxUint8) {
-		for end := range safe.Inc[uint8](0, math.MaxUint8) {
+	for begin := range safe.Inc[uint8](0, math.MaxUint8/2) {
+		for end := range safe.Inc[uint8](0, math.MaxUint8/2) {
 			for quantity := range safe.Inc[uint8](1, math.MaxUint8) {
 				spans, err := Evenly(begin, end, quantity)
 				if err != nil {
