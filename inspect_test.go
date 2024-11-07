@@ -8,22 +8,47 @@ import (
 )
 
 func TestIsNotDiffSequencing(t *testing.T) {
-	correct := []Span[int]{{2, 6}, {7, 11}, {12, 16}, {17, 18}}
-	difference := []Span[int]{{2, 6}, {7, 11}, {12, 16}, {18, 17}}
-
 	require.NoError(t, IsNotDiffSequencing[int](nil))
 	require.NoError(t, IsNotDiffSequencing([]Span[int]{}))
 	require.NoError(t, IsNotDiffSequencing([]Span[int]{{2, 6}}))
 	require.NoError(t, IsNotDiffSequencing([]Span[int]{{2, 6}, {7, 11}}))
-	require.NoError(t, IsNotDiffSequencing(correct))
+	require.NoError(
+		t,
+		IsNotDiffSequencing([]Span[int]{{2, 6}, {7, 11}, {12, 16}, {17, 18}}),
+	)
+	require.NoError(
+		t,
+		IsNotDiffSequencing([]Span[int]{{2, 2}, {7, 11}, {12, 16}, {17, 18}}),
+	)
+	require.NoError(
+		t,
+		IsNotDiffSequencing([]Span[int]{{2, 6}, {7, 7}, {12, 16}, {17, 18}}),
+	)
 
 	require.Error(t, IsNotDiffSequencing([]Span[int]{{2, 6}, {11, 7}}))
-	require.Error(t, IsNotDiffSequencing(difference))
+	require.Error(
+		t,
+		IsNotDiffSequencing([]Span[int]{{2, 6}, {7, 11}, {12, 16}, {18, 17}}),
+	)
+	require.Error(
+		t,
+		IsNotDiffSequencing([]Span[int]{{2, 2}, {7, 11}, {12, 16}, {18, 17}}),
+	)
+	require.Error(
+		t,
+		IsNotDiffSequencing([]Span[int]{{2, 6}, {7, 7}, {12, 16}, {18, 17}}),
+	)
 }
 
 func TestIsTwoSpansNotDiffSequencing(t *testing.T) {
 	require.NoError(t, isTwoSpansNotDiffSequencing(Span[int]{1, 2}, Span[int]{3, 4}))
 	require.NoError(t, isTwoSpansNotDiffSequencing(Span[int]{2, 1}, Span[int]{4, 3}))
+	require.NoError(t, isTwoSpansNotDiffSequencing(Span[int]{1, 1}, Span[int]{2, 2}))
+	require.NoError(t, isTwoSpansNotDiffSequencing(Span[int]{2, 2}, Span[int]{1, 1}))
+	require.NoError(t, isTwoSpansNotDiffSequencing(Span[int]{2, 2}, Span[int]{3, 4}))
+	require.NoError(t, isTwoSpansNotDiffSequencing(Span[int]{3, 4}, Span[int]{2, 2}))
+	require.NoError(t, isTwoSpansNotDiffSequencing(Span[int]{2, 2}, Span[int]{4, 3}))
+	require.NoError(t, isTwoSpansNotDiffSequencing(Span[int]{4, 3}, Span[int]{2, 2}))
 
 	require.Error(t, isTwoSpansNotDiffSequencing(Span[int]{1, 2}, Span[int]{4, 3}))
 	require.Error(t, isTwoSpansNotDiffSequencing(Span[int]{2, 1}, Span[int]{3, 4}))
