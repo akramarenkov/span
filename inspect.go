@@ -16,7 +16,7 @@ func IsNotDiffSequencing[Type constraints.Ordered](spans []Span[Type]) error {
 		return nil
 	}
 
-	// Since one of the spans being compared may have the same Begin and End,
+	// Since one of the spans being compared may have the same Begin and End values,
 	// while the other does not, it is necessary to compare all spans with all
 	for id, first := range spans[:len(spans)-1] {
 		for _, second := range spans[id+1:] {
@@ -41,30 +41,22 @@ func isTwoSpansNotDiffSequencing[Type constraints.Ordered](first, second Span[Ty
 	return ErrSpansDiffSequencing
 }
 
-// Checks that a spans sequence consists of only increasing spans.
-func IsIncreasing[Type constraints.Ordered](spans []Span[Type]) error {
-	if len(spans) == 0 {
-		return ErrSpansUnexpectedSequencing
-	}
-
+// Checks that a spans sequence consists of only non-decreasing spans.
+func IsNonDecreasing[Type constraints.Ordered](spans []Span[Type]) error {
 	for _, span := range spans {
 		if span.Begin > span.End {
-			return ErrSpansUnexpectedSequencing
+			return ErrSpanSequenceNotNonDecreasing
 		}
 	}
 
 	return nil
 }
 
-// Checks that a spans sequence consists of only decreasing spans.
-func IsDecreasing[Type constraints.Ordered](spans []Span[Type]) error {
-	if len(spans) == 0 {
-		return ErrSpansUnexpectedSequencing
-	}
-
+// Checks that a spans sequence consists of only non-increasing spans.
+func IsNonIncreasing[Type constraints.Ordered](spans []Span[Type]) error {
 	for _, span := range spans {
 		if span.Begin < span.End {
-			return ErrSpansUnexpectedSequencing
+			return ErrSpanSequenceNotNonIncreasing
 		}
 	}
 

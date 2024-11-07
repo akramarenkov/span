@@ -12,32 +12,14 @@ func TestIsNotDiffSequencing(t *testing.T) {
 	require.NoError(t, IsNotDiffSequencing([]Span[int]{}))
 	require.NoError(t, IsNotDiffSequencing([]Span[int]{{2, 6}}))
 	require.NoError(t, IsNotDiffSequencing([]Span[int]{{2, 6}, {7, 11}}))
-	require.NoError(
-		t,
-		IsNotDiffSequencing([]Span[int]{{2, 6}, {7, 11}, {12, 16}, {17, 18}}),
-	)
-	require.NoError(
-		t,
-		IsNotDiffSequencing([]Span[int]{{2, 2}, {7, 11}, {12, 16}, {17, 18}}),
-	)
-	require.NoError(
-		t,
-		IsNotDiffSequencing([]Span[int]{{2, 6}, {7, 7}, {12, 16}, {17, 18}}),
-	)
+	require.NoError(t, IsNotDiffSequencing([]Span[int]{{2, 6}, {7, 11}, {12, 16}, {17, 18}}))
+	require.NoError(t, IsNotDiffSequencing([]Span[int]{{2, 2}, {7, 11}, {12, 16}, {17, 18}}))
+	require.NoError(t, IsNotDiffSequencing([]Span[int]{{2, 6}, {7, 7}, {12, 16}, {17, 18}}))
 
 	require.Error(t, IsNotDiffSequencing([]Span[int]{{2, 6}, {11, 7}}))
-	require.Error(
-		t,
-		IsNotDiffSequencing([]Span[int]{{2, 6}, {7, 11}, {12, 16}, {18, 17}}),
-	)
-	require.Error(
-		t,
-		IsNotDiffSequencing([]Span[int]{{2, 2}, {7, 11}, {12, 16}, {18, 17}}),
-	)
-	require.Error(
-		t,
-		IsNotDiffSequencing([]Span[int]{{2, 6}, {7, 7}, {12, 16}, {18, 17}}),
-	)
+	require.Error(t, IsNotDiffSequencing([]Span[int]{{2, 6}, {7, 11}, {12, 16}, {18, 17}}))
+	require.Error(t, IsNotDiffSequencing([]Span[int]{{2, 2}, {7, 11}, {12, 16}, {18, 17}}))
+	require.Error(t, IsNotDiffSequencing([]Span[int]{{2, 6}, {7, 7}, {12, 16}, {18, 17}}))
 }
 
 func TestIsTwoSpansNotDiffSequencing(t *testing.T) {
@@ -54,30 +36,22 @@ func TestIsTwoSpansNotDiffSequencing(t *testing.T) {
 	require.Error(t, isTwoSpansNotDiffSequencing(Span[int]{2, 1}, Span[int]{3, 4}))
 }
 
-func TestIsIncreasing(t *testing.T) {
-	increasing := []Span[int]{{2, 6}, {7, 11}, {12, 16}, {17, 18}}
-	nonincreasing := []Span[int]{{2, 6}, {11, 7}, {12, 16}, {17, 18}}
+func TestIsNonDecreasing(t *testing.T) {
+	require.NoError(t, IsNonDecreasing([]Span[int]{{2, 6}}))
+	require.NoError(t, IsNonDecreasing([]Span[int]{{2, 6}, {7, 11}, {12, 16}, {17, 18}}))
+	require.NoError(t, IsNonDecreasing([]Span[int]{{2, 2}, {7, 11}, {12, 16}, {17, 18}}))
 
-	require.NoError(t, IsIncreasing([]Span[int]{{2, 6}}))
-	require.NoError(t, IsIncreasing(increasing))
-
-	require.Error(t, IsIncreasing[int](nil))
-	require.Error(t, IsIncreasing([]Span[int]{}))
-	require.Error(t, IsIncreasing([]Span[int]{{6, 2}}))
-	require.Error(t, IsIncreasing(nonincreasing))
+	require.Error(t, IsNonDecreasing([]Span[int]{{6, 2}}))
+	require.Error(t, IsNonDecreasing([]Span[int]{{2, 6}, {11, 7}, {12, 16}, {17, 18}}))
 }
 
-func TestIsDecreasing(t *testing.T) {
-	decreasing := []Span[int]{{18, 17}, {16, 12}, {11, 7}, {6, 2}}
-	nondecreasing := []Span[int]{{18, 17}, {16, 12}, {7, 11}, {6, 2}}
+func TestIsNonIncreasing(t *testing.T) {
+	require.NoError(t, IsNonIncreasing([]Span[int]{{6, 2}}))
+	require.NoError(t, IsNonIncreasing([]Span[int]{{18, 17}, {16, 12}, {11, 7}, {6, 2}}))
+	require.NoError(t, IsNonIncreasing([]Span[int]{{18, 17}, {16, 16}, {11, 7}, {6, 2}}))
 
-	require.NoError(t, IsDecreasing([]Span[int]{{6, 2}}))
-	require.NoError(t, IsDecreasing(decreasing))
-
-	require.Error(t, IsDecreasing[int](nil))
-	require.Error(t, IsDecreasing([]Span[int]{}))
-	require.Error(t, IsDecreasing([]Span[int]{{2, 6}}))
-	require.Error(t, IsDecreasing(nondecreasing))
+	require.Error(t, IsNonIncreasing([]Span[int]{{2, 6}}))
+	require.Error(t, IsNonIncreasing([]Span[int]{{18, 17}, {16, 12}, {7, 11}, {6, 2}}))
 }
 
 func TestIsNotIntersect(t *testing.T) {

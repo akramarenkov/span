@@ -8,11 +8,11 @@ import (
 //
 // Partially detects spans intersections, but does not guarantee complete verification.
 //
-// Partially detects the presence of different types of span sequences, but does not
-// guarantee complete verification.
+// Partially detects the presence of spans that have a different sequence type, but
+// does not guarantee complete verification.
 func CompareInc[Type constraints.Ordered](first, second Span[Type]) int {
 	if first.Begin > first.End || second.Begin > second.End {
-		panic(ErrSpansUnexpectedSequencing)
+		panic(ErrSpanSequenceNotNonDecreasing)
 	}
 
 	switch {
@@ -29,11 +29,11 @@ func CompareInc[Type constraints.Ordered](first, second Span[Type]) int {
 //
 // Partially detects spans intersections, but does not guarantee complete verification.
 //
-// Partially detects the presence of different types of span sequences, but does not
-// guarantee complete verification.
+// Partially detects the presence of spans that have a different sequence type, but
+// does not guarantee complete verification.
 func CompareDec[Type constraints.Ordered](first, second Span[Type]) int {
 	if first.Begin < first.End || second.Begin < second.End {
-		panic(ErrSpansUnexpectedSequencing)
+		panic(ErrSpanSequenceNotNonIncreasing)
 	}
 
 	switch {
@@ -48,11 +48,11 @@ func CompareDec[Type constraints.Ordered](first, second Span[Type]) int {
 
 // Compare function for searching in increasing sequence of spans.
 //
-// Partially detects the presence of different types of span sequences, but does not
-// guarantee complete verification.
+// Partially detects the presence of spans that have a different sequence type, but
+// does not guarantee complete verification.
 func SearchInc[Type constraints.Ordered](item, target Span[Type]) int {
 	if item.Begin > item.End || target.Begin > target.End {
-		panic(ErrSpansUnexpectedSequencing)
+		panic(ErrSpanSequenceNotNonDecreasing)
 	}
 
 	switch {
@@ -67,11 +67,11 @@ func SearchInc[Type constraints.Ordered](item, target Span[Type]) int {
 
 // Compare function for searching in decreasing sequence of spans.
 //
-// Partially detects the presence of different types of span sequences, but does not
-// guarantee complete verification.
+// Partially detects the presence of spans that have a different sequence type, but
+// does not guarantee complete verification.
 func SearchDec[Type constraints.Ordered](item, target Span[Type]) int {
 	if item.Begin < item.End || target.Begin < target.End {
-		panic(ErrSpansUnexpectedSequencing)
+		panic(ErrSpanSequenceNotNonIncreasing)
 	}
 
 	switch {
