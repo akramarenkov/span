@@ -43,11 +43,14 @@ func TestCompareInc(t *testing.T) {
 		[]Span[int]{{16, 20}, {2, 6}, {9, 13}},
 	)
 
-	intersect := []Span[int]{{2, 2}, {2, 2}, {2, 2}}
-	differenceSequencing := []Span[int]{{16, 12}, {11, 7}, {6, 2}}
-
-	require.Panics(t, func() { slices.SortFunc(intersect, CompareInc) })
-	require.Panics(t, func() { slices.SortFunc(differenceSequencing, CompareInc) })
+	require.Panics(
+		t,
+		func() { slices.SortFunc([]Span[int]{{2, 2}, {2, 2}, {2, 2}}, CompareInc) },
+	)
+	require.Panics(
+		t,
+		func() { slices.SortFunc([]Span[int]{{16, 12}, {11, 7}, {6, 2}}, CompareInc) },
+	)
 }
 
 func TestCompareDec(t *testing.T) {
@@ -86,11 +89,14 @@ func TestCompareDec(t *testing.T) {
 		[]Span[int]{{6, 2}, {20, 16}, {13, 9}},
 	)
 
-	intersect := []Span[int]{{2, 2}, {2, 2}, {2, 2}}
-	differenceSequencing := []Span[int]{{2, 6}, {7, 11}, {12, 16}}
-
-	require.Panics(t, func() { slices.SortFunc(intersect, CompareDec) })
-	require.Panics(t, func() { slices.SortFunc(differenceSequencing, CompareDec) })
+	require.Panics(
+		t,
+		func() { slices.SortFunc([]Span[int]{{2, 2}, {2, 2}, {2, 2}}, CompareDec) },
+	)
+	require.Panics(
+		t,
+		func() { slices.SortFunc([]Span[int]{{2, 6}, {7, 11}, {12, 16}}, CompareDec) },
+	)
 }
 
 func testCompareFunc(
@@ -317,9 +323,10 @@ func TestSearchInc(t *testing.T) {
 }
 
 func TestSearchIncPanic(t *testing.T) {
-	differenceSequencing := []Span[int]{{16, 12}, {11, 7}, {6, 2}}
-
-	require.Panics(t, func() { slices.SortFunc(differenceSequencing, SearchInc) })
+	require.Panics(
+		t,
+		func() { slices.SortFunc([]Span[int]{{16, 12}, {11, 7}, {6, 2}}, SearchInc) },
+	)
 }
 
 func TestSearchDec(t *testing.T) {
@@ -535,7 +542,8 @@ func TestSearchDec(t *testing.T) {
 }
 
 func TestSearchDecPanic(t *testing.T) {
-	differenceSequencing := []Span[int]{{2, 6}, {7, 11}, {12, 16}}
-
-	require.Panics(t, func() { slices.SortFunc(differenceSequencing, SearchDec) })
+	require.Panics(
+		t,
+		func() { slices.SortFunc([]Span[int]{{2, 6}, {7, 11}, {12, 16}}, SearchDec) },
+	)
 }
