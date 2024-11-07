@@ -81,10 +81,6 @@ func IsNotIntersect[Type constraints.Ordered](spans []Span[Type]) error {
 }
 
 func isTwoSpansNotIntersect[Type constraints.Ordered](first, second Span[Type]) error {
-	if err := isTwoSpansNotDiffSequencing(first, second); err != nil {
-		return err
-	}
-
 	if first.End >= second.Begin && first.End <= second.End {
 		return ErrSpansIntersect
 	}
@@ -112,8 +108,7 @@ func isTwoSpansNotIntersect[Type constraints.Ordered](first, second Span[Type]) 
 	return nil
 }
 
-// Checks that a sequence of spans is continuous, monotone and does not contain
-// intersecting spans.
+// Checks that a sequence of spans is continuous and monotone.
 func IsContinuous[Type constraints.Integer](spans []Span[Type]) error {
 	if len(spans) < significantSpansQuantity {
 		return nil
@@ -124,6 +119,12 @@ func IsContinuous[Type constraints.Integer](spans []Span[Type]) error {
 
 		if err := isTwoSpansContinuous(first, second); err != nil {
 			return err
+		}
+
+		for _, third := range spans[id+1:] {
+			if err := isTwoSpansNotIntersect(first, third); err != nil {
+				return err
+			}
 		}
 	}
 

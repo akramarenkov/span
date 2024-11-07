@@ -37,6 +37,8 @@ func TestIsTwoSpansNotDiffSequencing(t *testing.T) {
 }
 
 func TestIsNonDecreasing(t *testing.T) {
+	require.NoError(t, IsNonDecreasing[int](nil))
+	require.NoError(t, IsNonDecreasing([]Span[int]{}))
 	require.NoError(t, IsNonDecreasing([]Span[int]{{2, 6}}))
 	require.NoError(t, IsNonDecreasing([]Span[int]{{2, 6}, {7, 11}, {12, 16}, {17, 18}}))
 	require.NoError(t, IsNonDecreasing([]Span[int]{{2, 2}, {7, 11}, {12, 16}, {17, 18}}))
@@ -46,6 +48,8 @@ func TestIsNonDecreasing(t *testing.T) {
 }
 
 func TestIsNonIncreasing(t *testing.T) {
+	require.NoError(t, IsNonIncreasing[int](nil))
+	require.NoError(t, IsNonIncreasing([]Span[int]{}))
 	require.NoError(t, IsNonIncreasing([]Span[int]{{6, 2}}))
 	require.NoError(t, IsNonIncreasing([]Span[int]{{18, 17}, {16, 12}, {11, 7}, {6, 2}}))
 	require.NoError(t, IsNonIncreasing([]Span[int]{{18, 17}, {16, 16}, {11, 7}, {6, 2}}))
@@ -55,19 +59,23 @@ func TestIsNonIncreasing(t *testing.T) {
 }
 
 func TestIsNotIntersect(t *testing.T) {
-	correct := []Span[int]{{2, 6}, {7, 11}, {12, 16}, {17, 18}}
-	intersected := []Span[int]{{2, 6}, {7, 11}, {12, 16}, {16, 18}}
-
 	require.NoError(t, IsNotIntersect[int](nil))
 	require.NoError(t, IsNotIntersect([]Span[int]{}))
 	require.NoError(t, IsNotIntersect([]Span[int]{{2, 6}}))
 	require.NoError(t, IsNotIntersect([]Span[int]{{2, 6}, {7, 11}}))
-	require.NoError(t, IsNotIntersect(correct))
+	require.NoError(t, IsNotIntersect([]Span[int]{{2, 6}, {11, 7}}))
+	require.NoError(t, IsNotIntersect([]Span[int]{{2, 6}, {7, 11}, {12, 16}, {17, 18}}))
+	require.NoError(t, IsNotIntersect([]Span[int]{{2, 2}, {7, 11}, {12, 16}, {17, 18}}))
+	require.NoError(t, IsNotIntersect([]Span[int]{{2, 6}, {7, 7}, {12, 16}, {17, 18}}))
+	require.NoError(t, IsNotIntersect([]Span[int]{{2, 6}, {7, 7}, {16, 12}, {17, 18}}))
 
 	require.Error(t, IsNotIntersect([]Span[int]{{2, 6}, {6, 11}}))
-	require.Error(t, IsNotIntersect(intersected))
-
-	require.Error(t, IsNotIntersect([]Span[int]{{2, 6}, {11, 7}}))
+	require.Error(t, IsNotIntersect([]Span[int]{{2, 8}, {11, 7}}))
+	require.Error(t, IsNotIntersect([]Span[int]{{2, 6}, {7, 11}, {12, 16}, {16, 18}}))
+	require.Error(t, IsNotIntersect([]Span[int]{{2, 6}, {6, 6}, {12, 16}, {16, 18}}))
+	require.Error(t, IsNotIntersect([]Span[int]{{2, 6}, {7, 7}, {12, 16}, {7, 8}}))
+	require.Error(t, IsNotIntersect([]Span[int]{{2, 6}, {7, 7}, {17, 12}, {17, 18}}))
+	require.Error(t, IsNotIntersect([]Span[int]{{2, 6}, {7, 7}, {16, 3}, {17, 18}}))
 }
 
 func TestIsTwoSpansNotIntersect(t *testing.T) {
@@ -101,22 +109,51 @@ func TestIsTwoSpansNotIntersect(t *testing.T) {
 	require.Error(t, isTwoSpansNotIntersect(Span[int]{5, 1}, Span[int]{4, 2}))
 	require.Error(t, isTwoSpansNotIntersect(Span[int]{4, 2}, Span[int]{5, 1}))
 
-	require.Error(t, isTwoSpansNotIntersect(Span[int]{1, 2}, Span[int]{4, 3}))
+	require.NoError(t, isTwoSpansNotIntersect(Span[int]{1, 2}, Span[int]{4, 3}))
+	require.NoError(t, isTwoSpansNotIntersect(Span[int]{4, 3}, Span[int]{1, 2}))
+	require.NoError(t, isTwoSpansNotIntersect(Span[int]{1, 2}, Span[int]{5, 3}))
+	require.NoError(t, isTwoSpansNotIntersect(Span[int]{5, 3}, Span[int]{1, 2}))
+	require.NoError(t, isTwoSpansNotIntersect(Span[int]{1, 2}, Span[int]{0, -2}))
+	require.NoError(t, isTwoSpansNotIntersect(Span[int]{0, -2}, Span[int]{1, 2}))
+
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{1, 3}, Span[int]{4, 3}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{4, 3}, Span[int]{1, 3}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{1, 4}, Span[int]{5, 3}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{5, 3}, Span[int]{1, 4}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{0, 2}, Span[int]{0, -2}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{0, -2}, Span[int]{0, 2}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{-1, 2}, Span[int]{0, -2}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{0, -2}, Span[int]{-1, 2}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{1, 3}, Span[int]{2, 2}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{2, 2}, Span[int]{1, 3}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{1, 5}, Span[int]{3, 2}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{3, 2}, Span[int]{1, 5}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{5, 1}, Span[int]{2, 3}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{2, 3}, Span[int]{5, 1}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{1, 5}, Span[int]{4, 2}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{4, 2}, Span[int]{1, 5}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{5, 1}, Span[int]{2, 4}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{2, 4}, Span[int]{5, 1}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{2, 3}, Span[int]{3, 2}))
+	require.Error(t, isTwoSpansNotIntersect(Span[int]{3, 2}, Span[int]{2, 3}))
 }
 
 func TestIsContinuous(t *testing.T) {
-	continuous := []Span[uint]{{2, 6}, {7, 11}, {12, 16}, {17, 18}}
-	discontinuous := []Span[uint]{{2, 6}, {7, 11}, {13, 16}, {17, 18}}
-	intersected := []Span[uint]{{2, 6}, {7, 11}, {10, 16}, {17, 18}}
-
 	require.NoError(t, IsContinuous[int](nil))
 	require.NoError(t, IsContinuous([]Span[int]{}))
 	require.NoError(t, IsContinuous([]Span[int]{{2, 6}}))
 	require.NoError(t, IsContinuous([]Span[int]{{6, 2}}))
-	require.NoError(t, IsContinuous(continuous))
+	require.NoError(t, IsContinuous([]Span[uint]{{2, 6}, {7, 11}, {12, 16}, {17, 18}}))
 
-	require.Error(t, IsContinuous(discontinuous))
-	require.Error(t, IsContinuous(intersected))
+	require.Error(t, IsContinuous([]Span[uint]{{2, 6}, {7, 11}, {13, 16}, {17, 18}}))
+	require.Error(t, IsContinuous([]Span[uint]{{2, 6}, {7, 11}, {10, 16}, {17, 18}}))
+	require.Error(t, IsContinuous([]Span[uint]{{2, 6}, {7, 11}, {5, 16}, {17, 18}}))
+	require.Error(t, IsContinuous([]Span[uint]{{2, 6}, {7, 11}, {2, 2}, {17, 18}}))
+	require.Error(t, IsContinuous([]Span[uint]{{2, 6}, {7, 11}, {16, 12}, {17, 18}}))
+	require.Error(t, IsContinuous([]Span[uint]{{2, 6}, {7, 11}, {12, 12}, {11, 11}}))
+	require.Error(t, IsContinuous([]Span[uint]{{2, 6}, {7, 11}, {12, 12}, {11, 10}}))
+	require.Error(t, IsContinuous([]Span[uint]{{2, 6}, {7, 11}, {12, 11}, {11, 12}}))
+	require.Error(t, IsContinuous([]Span[uint]{{2, 2}, {3, 3}, {4, 4}, {3, 3}}))
 }
 
 func TestIsTwoSpansContinuous(t *testing.T) {
@@ -197,5 +234,9 @@ func TestIsTwoSpansContinuous(t *testing.T) {
 	)
 
 	require.Error(t, isTwoSpansContinuous(Span[int]{1, 2}, Span[int]{4, 3}))
+	require.Error(t, isTwoSpansContinuous(Span[int]{4, 3}, Span[int]{1, 2}))
+	require.Error(t, isTwoSpansContinuous(Span[int]{1, 2}, Span[int]{3, 2}))
+	require.Error(t, isTwoSpansContinuous(Span[int]{3, 2}, Span[int]{1, 2}))
 	require.Error(t, isTwoSpansContinuous(Span[int]{1, 2}, Span[int]{1, 3}))
+	require.Error(t, isTwoSpansContinuous(Span[int]{1, 3}, Span[int]{1, 2}))
 }
