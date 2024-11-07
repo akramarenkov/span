@@ -43,6 +43,13 @@ func TestCompareInc(t *testing.T) {
 		[]Span[int]{{16, 20}, {2, 6}, {9, 13}},
 	)
 
+	testCompareFunc(
+		t,
+		CompareInc,
+		[]Span[int]{{2, 6}, {8, 8}, {16, 20}},
+		[]Span[int]{{16, 20}, {2, 6}, {8, 8}},
+	)
+
 	require.Panics(
 		t,
 		func() { slices.SortFunc([]Span[int]{{2, 2}, {2, 2}, {2, 2}}, CompareInc) },
@@ -87,6 +94,13 @@ func TestCompareDec(t *testing.T) {
 		CompareDec,
 		[]Span[int]{{20, 16}, {13, 9}, {6, 2}},
 		[]Span[int]{{6, 2}, {20, 16}, {13, 9}},
+	)
+
+	testCompareFunc(
+		t,
+		CompareDec,
+		[]Span[int]{{20, 16}, {8, 8}, {6, 2}},
+		[]Span[int]{{6, 2}, {20, 16}, {8, 8}},
 	)
 
 	require.Panics(
