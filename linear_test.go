@@ -153,6 +153,11 @@ func TestLinearError(t *testing.T) {
 }
 
 func TestLinearIsContinuous(t *testing.T) {
+	testLinearIsContinuousSig(t)
+	testLinearIsContinuousUns(t)
+}
+
+func testLinearIsContinuousSig(t *testing.T) {
 	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
 		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
 			for width := range safe.Inc[int8](1, math.MaxInt8) {
@@ -182,7 +187,9 @@ func TestLinearIsContinuous(t *testing.T) {
 			}
 		}
 	}
+}
 
+func testLinearIsContinuousUns(t *testing.T) {
 	for begin := range safe.Inc[uint8](0, math.MaxUint8) {
 		for end := range safe.Inc[uint8](0, math.MaxUint8) {
 			for width := range safe.Inc[uint8](1, math.MaxUint8) {
@@ -214,6 +221,11 @@ func TestLinearIsContinuous(t *testing.T) {
 }
 
 func TestLinearIsSorted(t *testing.T) {
+	testLinearIsSortedSig(t)
+	testLinearIsSortedUns(t)
+}
+
+func testLinearIsSortedSig(t *testing.T) {
 	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
 		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
 			for width := range safe.Inc[int8](1, math.MaxInt8) {
@@ -233,6 +245,43 @@ func TestLinearIsSorted(t *testing.T) {
 
 				if begin > end {
 					cmp = CompareDec[int8]
+				}
+
+				if sorted := slices.IsSortedFunc(spans, cmp); !sorted {
+					require.True(
+						t,
+						sorted,
+						"begin: %v, end: %v, width: %v",
+						begin,
+						end,
+						width,
+					)
+				}
+			}
+		}
+	}
+}
+
+func testLinearIsSortedUns(t *testing.T) {
+	for begin := range safe.Inc[uint8](0, math.MaxUint8) {
+		for end := range safe.Inc[uint8](0, math.MaxUint8) {
+			for width := range safe.Inc[uint8](1, math.MaxUint8) {
+				spans, err := Linear(begin, end, width)
+				if err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, width: %v",
+						begin,
+						end,
+						width,
+					)
+				}
+
+				cmp := CompareInc[uint8]
+
+				if begin > end {
+					cmp = CompareDec[uint8]
 				}
 
 				if sorted := slices.IsSortedFunc(spans, cmp); !sorted {

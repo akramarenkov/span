@@ -35,10 +35,10 @@ func Evenly[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], 
 
 	spans := make([]Span[Type], 0, quantity)
 
-	if begin < end {
-		for spanBegin, spanEnd := begin, begin+distance-1; ; {
+	if begin > end {
+		for spanBegin, spanEnd := begin, begin-distance+1; ; {
 			if remainder != 0 {
-				spanEnd++
+				spanEnd--
 				remainder--
 			}
 
@@ -53,14 +53,14 @@ func Evenly[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], 
 				return spans, nil
 			}
 
-			spanBegin = spanEnd + 1
-			spanEnd += distance
+			spanBegin = spanEnd - 1
+			spanEnd -= distance
 		}
 	}
 
-	for spanBegin, spanEnd := begin, begin-distance+1; ; {
+	for spanBegin, spanEnd := begin, begin+distance-1; ; {
 		if remainder != 0 {
-			spanEnd--
+			spanEnd++
 			remainder--
 		}
 
@@ -75,8 +75,8 @@ func Evenly[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], 
 			return spans, nil
 		}
 
-		spanBegin = spanEnd - 1
-		spanEnd -= distance
+		spanBegin = spanEnd + 1
+		spanEnd += distance
 	}
 }
 
@@ -110,12 +110,12 @@ func Even[Type constraints.Integer](begin, end, quantity Type) iter.Seq2[uint64,
 
 		distance, remainder := evenlyDistance(begin, end, quantity)
 
-		if begin < end {
-			evenInc(begin, end, distance, remainder, yield)
+		if begin > end {
+			evenDec(begin, end, distance, remainder, yield)
 			return
 		}
 
-		evenDec(begin, end, distance, remainder, yield)
+		evenInc(begin, end, distance, remainder, yield)
 	}
 
 	return iterator
