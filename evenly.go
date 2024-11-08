@@ -1,6 +1,8 @@
 package span
 
 import (
+	"iter"
+
 	"github.com/akramarenkov/safe"
 	"golang.org/x/exp/constraints"
 )
@@ -8,8 +10,11 @@ import (
 // Divides a linear sequence of integers evenly from begin to end inclusive into a
 // specified quantity of spans.
 //
-// If begin is greater than end, the sequence will be considered decreasing,
+// If begin is greater than end, the sequence of integers will be considered decreasing,
 // otherwise - increasing.
+//
+// Length of the returned slice may be one less than the specified quantity of spans,
+// but cannot be greater.
 //
 // If a zero or negative quantity of spans is specified, an error is returned.
 func Evenly[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], error) {
@@ -70,6 +75,115 @@ func Evenly[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], 
 			return spans, nil
 		}
 
+		spanBegin = spanEnd - 1
+		spanEnd -= distance
+	}
+}
+
+// A range iterator used to iterating over a sequence of spans obtained by dividing
+// a linear sequence of integers evenly from begin to end inclusive into a specified
+// quantity of spans.
+//
+// If begin is greater than end, the sequence of spans will be decreasing,
+// otherwise - increasing.
+//
+// Quantity of iterations can be one less than the specified quantity of spans, but
+// cannot be greater.
+//
+// If a zero or negative quantity of spans is specified, the iterator will panic.
+//
+// Works like [Evenly] but does not perform memory allocation.
+func Even[Type constraints.Integer](begin, end, quantity Type) iter.Seq2[uint64, Span[Type]] {
+	if quantity < 0 {
+		panic(ErrSpansQuantityNegative)
+	}
+
+	if quantity == 0 {
+		panic(ErrSpansQuantityZero)
+	}
+
+	iterator := func(yield func(uint64, Span[Type]) bool) {
+		if quantity == 1 {
+			yield(0, Span[Type]{Begin: begin, End: end})
+			return
+		}
+
+		distance, remainder := evenlyDistance(begin, end, quantity)
+
+		if begin < end {
+			evenInc(begin, end, distance, remainder, yield)
+			return
+		}
+
+		evenDec(begin, end, distance, remainder, yield)
+	}
+
+	return iterator
+}
+
+func evenInc[Type constraints.Integer](
+	begin Type,
+	end Type,
+	distance Type,
+	remainder Type,
+	yield func(uint64, Span[Type]) bool,
+) {
+	id := uint64(0)
+
+	for spanBegin, spanEnd := begin, begin+distance-1; ; {
+		if remainder != 0 {
+			spanEnd++
+			remainder--
+		}
+
+		span := Span[Type]{
+			Begin: spanBegin,
+			End:   spanEnd,
+		}
+
+		if !yield(id, span) {
+			return
+		}
+
+		if spanEnd == end {
+			return
+		}
+
+		id++
+		spanBegin = spanEnd + 1
+		spanEnd += distance
+	}
+}
+
+func evenDec[Type constraints.Integer](
+	begin Type,
+	end Type,
+	distance Type,
+	remainder Type,
+	yield func(uint64, Span[Type]) bool,
+) {
+	id := uint64(0)
+
+	for spanBegin, spanEnd := begin, begin-distance+1; ; {
+		if remainder != 0 {
+			spanEnd--
+			remainder--
+		}
+
+		span := Span[Type]{
+			Begin: spanBegin,
+			End:   spanEnd,
+		}
+
+		if !yield(id, span) {
+			return
+		}
+
+		if spanEnd == end {
+			return
+		}
+
+		id++
 		spanBegin = spanEnd - 1
 		spanEnd -= distance
 	}

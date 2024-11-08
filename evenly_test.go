@@ -113,6 +113,11 @@ func TestEvenlyError(t *testing.T) {
 }
 
 func TestEvenlyIsContinuous(t *testing.T) {
+	testEvenlyIsContinuousSig(t)
+	testEvenlyIsContinuousUns(t)
+}
+
+func testEvenlyIsContinuousSig(t *testing.T) {
 	for begin := range safe.Inc[int8](math.MinInt8/2, math.MaxInt8/2) {
 		for end := range safe.Inc[int8](math.MinInt8/2, math.MaxInt8/2) {
 			for quantity := range safe.Inc[int8](1, math.MaxInt8) {
@@ -142,7 +147,9 @@ func TestEvenlyIsContinuous(t *testing.T) {
 			}
 		}
 	}
+}
 
+func testEvenlyIsContinuousUns(t *testing.T) {
 	for begin := range safe.Inc[uint8](0, math.MaxUint8/2) {
 		for end := range safe.Inc[uint8](0, math.MaxUint8/2) {
 			for quantity := range safe.Inc[uint8](1, math.MaxUint8) {
@@ -174,6 +181,11 @@ func TestEvenlyIsContinuous(t *testing.T) {
 }
 
 func TestEvenlyIsSorted(t *testing.T) {
+	testEvenlyIsSortedSig(t)
+	testEvenlyIsSortedUns(t)
+}
+
+func testEvenlyIsSortedSig(t *testing.T) {
 	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
 		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
 			for quantity := range safe.Inc[int8](1, math.MaxInt8) {
@@ -210,6 +222,107 @@ func TestEvenlyIsSorted(t *testing.T) {
 	}
 }
 
+func testEvenlyIsSortedUns(t *testing.T) {
+	for begin := range safe.Inc[uint8](0, math.MaxUint8) {
+		for end := range safe.Inc[uint8](0, math.MaxUint8) {
+			for quantity := range safe.Inc[uint8](1, math.MaxUint8) {
+				spans, err := Evenly(begin, end, quantity)
+				if err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, quantity: %v",
+						begin,
+						end,
+						quantity,
+					)
+				}
+
+				cmp := CompareInc[uint8]
+
+				if begin > end {
+					cmp = CompareDec[uint8]
+				}
+
+				if sorted := slices.IsSortedFunc(spans, cmp); !sorted {
+					require.True(
+						t,
+						sorted,
+						"begin: %v, end: %v, quantity: %v",
+						begin,
+						end,
+						quantity,
+					)
+				}
+			}
+		}
+	}
+}
+
+func TestEven(t *testing.T) {
+	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+			for quantity := range safe.Inc[int8](1, math.MaxInt8) {
+				expected, err := Evenly(begin, end, quantity)
+				if err != nil {
+					require.NoError(
+						t,
+						err,
+						"begin: %v, end: %v, quantity: %v",
+						begin,
+						end,
+						quantity,
+					)
+				}
+
+				actual := make([]Span[int8], len(expected))
+
+				for id, span := range Even(begin, end, quantity) {
+					actual[id] = span
+				}
+
+				require.Equal(
+					t,
+					expected,
+					actual,
+					"begin: %v, end: %v, quantity: %v",
+					begin,
+					end,
+					quantity,
+				)
+			}
+		}
+	}
+}
+
+func TestEvenBreak(*testing.T) {
+	for range Even(1, 2, 2) {
+		break
+	}
+
+	for range Even(2, 1, 2) {
+		break
+	}
+}
+
+func TestEvenPanic(t *testing.T) {
+	require.Panics(t,
+		func() {
+			for id := range Even(1, 2, -1) {
+				_ = id
+			}
+		},
+	)
+
+	require.Panics(t,
+		func() {
+			for id := range Even(1, 2, 0) {
+				_ = id
+			}
+		},
+	)
+}
+
 func BenchmarkEvenly(b *testing.B) {
 	expected := []Span[int]{{1, 1}, {2, 2}}
 
@@ -223,5 +336,37 @@ func BenchmarkEvenly(b *testing.B) {
 	}
 
 	require.NoError(b, err)
+	require.Equal(b, expected, spans)
+}
+
+func BenchmarkEven(b *testing.B) {
+	expected := []Span[int]{{1, 1}, {2, 2}}
+
+	var spans []Span[int]
+
+	for range b.N {
+		spans = make([]Span[int], 0, 2)
+
+		for _, span := range Even(1, 2, 2) {
+			spans = append(spans, span)
+		}
+	}
+
+	require.Equal(b, expected, spans)
+}
+
+func BenchmarkEvenNoAlloc(b *testing.B) {
+	expected := []Span[int]{{1, 1}, {2, 2}}
+
+	spans := make([]Span[int], 0, 2)
+
+	for range b.N {
+		spans = spans[:0]
+
+		for _, span := range Even(1, 2, 2) {
+			spans = append(spans, span)
+		}
+	}
+
 	require.Equal(b, expected, spans)
 }
