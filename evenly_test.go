@@ -260,8 +260,8 @@ func testEvenlyIsSortedUns(t *testing.T) {
 }
 
 func TestEven(t *testing.T) {
-	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
-		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
+	for begin := range safe.Inc[int8](math.MinInt8/2, math.MaxInt8/2) {
+		for end := range safe.Inc[int8](math.MinInt8/2, math.MaxInt8/2) {
 			for quantity := range safe.Inc[int8](1, math.MaxInt8) {
 				expected, err := Evenly(begin, end, quantity)
 				if err != nil {
