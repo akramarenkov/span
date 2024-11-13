@@ -5,7 +5,6 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/akramarenkov/safe"
 	"github.com/stretchr/testify/require"
 )
 
@@ -118,63 +117,60 @@ func TestEvenlyIsContinuous(t *testing.T) {
 }
 
 func testEvenlyIsContinuousSig(t *testing.T) {
-	for begin := range safe.Inc[int8](math.MinInt8/2, math.MaxInt8/2) {
-		for end := range safe.Inc[int8](math.MinInt8/2, math.MaxInt8/2) {
-			for quantity := range safe.Inc[int8](1, math.MaxInt8) {
-				spans, err := Evenly(begin, end, quantity)
-				if err != nil {
-					require.NoError(
-						t,
-						err,
-						"begin: %v, end: %v, quantity: %v",
-						begin,
-						end,
-						quantity,
-					)
-				}
+	beginning, endings, quantities := testEvenlyRangeSig()
 
-				// conditions are duplicated to performance reasons
-				if err := IsContinuous(spans); err != nil {
-					require.NoError(
-						t,
-						err,
-						"begin: %v, end: %v, quantity: %v",
-						begin,
-						end,
-						quantity,
-					)
-				}
+	for _, begin := range beginning {
+		for _, end := range endings {
+			for _, quantity := range quantities {
+				spans, err := Evenly(begin, end, quantity)
+				require.NoError(
+					t,
+					err,
+					"begin: %v, end: %v, quantity: %v",
+					begin,
+					end,
+					quantity,
+				)
+
+				err = IsContinuous(spans)
+				require.NoError(
+					t,
+					err,
+					"begin: %v, end: %v, quantity: %v",
+					begin,
+					end,
+					quantity,
+				)
 			}
 		}
 	}
 }
 
 func testEvenlyIsContinuousUns(t *testing.T) {
-	for begin := range safe.Inc[uint8](0, math.MaxUint8/2) {
-		for end := range safe.Inc[uint8](0, math.MaxUint8/2) {
-			for quantity := range safe.Inc[uint8](1, math.MaxUint8) {
-				spans, err := Evenly(begin, end, quantity)
-				if err != nil {
-					require.NoError(
-						t,
-						err,
-						"begin: %v, end: %v, quantity: %v",
-						begin,
-						end,
-						quantity,
-					)
-				}
+	beginning, endings, quantities := testEvenlyRangeUns()
 
-				if err := IsContinuous(spans); err != nil {
-					require.NoError(
-						t,
-						err,
-						"begin: %v, end: %v, quantity: %v",
-						begin,
-						end,
-						quantity,
-					)
-				}
+	for _, begin := range beginning {
+		for _, end := range endings {
+			for _, quantity := range quantities {
+				spans, err := Evenly(begin, end, quantity)
+				require.NoError(
+					t,
+					err,
+					"begin: %v, end: %v, quantity: %v",
+					begin,
+					end,
+					quantity,
+				)
+
+				err = IsContinuous(spans)
+				require.NoError(
+					t,
+					err,
+					"begin: %v, end: %v, quantity: %v",
+					begin,
+					end,
+					quantity,
+				)
 			}
 		}
 	}
@@ -186,20 +182,20 @@ func TestEvenlyIsSorted(t *testing.T) {
 }
 
 func testEvenlyIsSortedSig(t *testing.T) {
-	for begin := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
-		for end := range safe.Inc[int8](math.MinInt8, math.MaxInt8) {
-			for quantity := range safe.Inc[int8](1, math.MaxInt8) {
+	beginning, endings, quantities := testEvenlyRangeSig()
+
+	for _, begin := range beginning {
+		for _, end := range endings {
+			for _, quantity := range quantities {
 				spans, err := Evenly(begin, end, quantity)
-				if err != nil {
-					require.NoError(
-						t,
-						err,
-						"begin: %v, end: %v, quantity: %v",
-						begin,
-						end,
-						quantity,
-					)
-				}
+				require.NoError(
+					t,
+					err,
+					"begin: %v, end: %v, quantity: %v",
+					begin,
+					end,
+					quantity,
+				)
 
 				cmp := CompareInc[int8]
 
@@ -207,36 +203,35 @@ func testEvenlyIsSortedSig(t *testing.T) {
 					cmp = CompareDec[int8]
 				}
 
-				if sorted := slices.IsSortedFunc(spans, cmp); !sorted {
-					require.True(
-						t,
-						sorted,
-						"begin: %v, end: %v, quantity: %v",
-						begin,
-						end,
-						quantity,
-					)
-				}
+				sorted := slices.IsSortedFunc(spans, cmp)
+				require.True(
+					t,
+					sorted,
+					"begin: %v, end: %v, quantity: %v",
+					begin,
+					end,
+					quantity,
+				)
 			}
 		}
 	}
 }
 
 func testEvenlyIsSortedUns(t *testing.T) {
-	for begin := range safe.Inc[uint8](0, math.MaxUint8) {
-		for end := range safe.Inc[uint8](0, math.MaxUint8) {
-			for quantity := range safe.Inc[uint8](1, math.MaxUint8) {
+	beginning, endings, quantities := testEvenlyRangeUns()
+
+	for _, begin := range beginning {
+		for _, end := range endings {
+			for _, quantity := range quantities {
 				spans, err := Evenly(begin, end, quantity)
-				if err != nil {
-					require.NoError(
-						t,
-						err,
-						"begin: %v, end: %v, quantity: %v",
-						begin,
-						end,
-						quantity,
-					)
-				}
+				require.NoError(
+					t,
+					err,
+					"begin: %v, end: %v, quantity: %v",
+					begin,
+					end,
+					quantity,
+				)
 
 				cmp := CompareInc[uint8]
 
@@ -244,36 +239,40 @@ func testEvenlyIsSortedUns(t *testing.T) {
 					cmp = CompareDec[uint8]
 				}
 
-				if sorted := slices.IsSortedFunc(spans, cmp); !sorted {
-					require.True(
-						t,
-						sorted,
-						"begin: %v, end: %v, quantity: %v",
-						begin,
-						end,
-						quantity,
-					)
-				}
+				sorted := slices.IsSortedFunc(spans, cmp)
+				require.True(
+					t,
+					sorted,
+					"begin: %v, end: %v, quantity: %v",
+					begin,
+					end,
+					quantity,
+				)
 			}
 		}
 	}
 }
 
 func TestEven(t *testing.T) {
-	for begin := range safe.Inc[int8](math.MinInt8/2, math.MaxInt8/2) {
-		for end := range safe.Inc[int8](math.MinInt8/2, math.MaxInt8/2) {
-			for quantity := range safe.Inc[int8](1, math.MaxInt8) {
+	testEvenSig(t)
+	testEvenUns(t)
+}
+
+func testEvenSig(t *testing.T) {
+	beginning, endings, quantities := testEvenlyRangeSig()
+
+	for _, begin := range beginning {
+		for _, end := range endings {
+			for _, quantity := range quantities {
 				expected, err := Evenly(begin, end, quantity)
-				if err != nil {
-					require.NoError(
-						t,
-						err,
-						"begin: %v, end: %v, quantity: %v",
-						begin,
-						end,
-						quantity,
-					)
-				}
+				require.NoError(
+					t,
+					err,
+					"begin: %v, end: %v, quantity: %v",
+					begin,
+					end,
+					quantity,
+				)
 
 				actual := make([]Span[int8], len(expected))
 
@@ -293,6 +292,84 @@ func TestEven(t *testing.T) {
 			}
 		}
 	}
+}
+
+func testEvenUns(t *testing.T) {
+	beginning, endings, quantities := testEvenlyRangeUns()
+
+	for _, begin := range beginning {
+		for _, end := range endings {
+			for _, quantity := range quantities {
+				expected, err := Evenly(begin, end, quantity)
+				require.NoError(
+					t,
+					err,
+					"begin: %v, end: %v, quantity: %v",
+					begin,
+					end,
+					quantity,
+				)
+
+				actual := make([]Span[uint8], len(expected))
+
+				for id, span := range Even(begin, end, quantity) {
+					actual[id] = span
+				}
+
+				require.Equal(
+					t,
+					expected,
+					actual,
+					"begin: %v, end: %v, quantity: %v",
+					begin,
+					end,
+					quantity,
+				)
+			}
+		}
+	}
+}
+
+func testEvenlyRangeSig() ([]int8, []int8, []int8) {
+	beginning := []int8{
+		-128, -127, -126, -125, -124, -123, -122, -121, -120, -119,
+		-10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+		118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
+	}
+
+	endings := []int8{
+		-128, -127, -126, -125, -124, -123, -122, -121, -120, -119,
+		-10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+		118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
+	}
+
+	quantities := []int8{
+		1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+		118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
+	}
+
+	return beginning, endings, quantities
+}
+
+func testEvenlyRangeUns() ([]uint8, []uint8, []uint8) {
+	beginning := []uint8{
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+		246, 247, 248, 249, 250, 251, 252, 253, 254, 255,
+	}
+
+	endings := []uint8{
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+		246, 247, 248, 249, 250, 251, 252, 253, 254, 255,
+	}
+
+	quantities := []uint8{
+		1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+		246, 247, 248, 249, 250, 251, 252, 253, 254, 255,
+	}
+
+	return beginning, endings, quantities
 }
 
 func TestEvenBreak(*testing.T) {
