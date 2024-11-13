@@ -432,7 +432,7 @@ func BenchmarkEven(b *testing.B) {
 	require.Equal(b, expected, spans)
 }
 
-func BenchmarkEvenNoAlloc(b *testing.B) {
+func BenchmarkEvenNoRealloc(b *testing.B) {
 	expected := []Span[int]{{1, 1}, {2, 2}}
 
 	spans := make([]Span[int], 0, 2)

@@ -157,11 +157,11 @@ func TestLinearIsContinuous(t *testing.T) {
 }
 
 func testLinearIsContinuousSig(t *testing.T) {
-	beginning, endings, quantities := testLinearRangeSig()
+	beginning, endings, widths := testLinearRangeSig()
 
 	for _, begin := range beginning {
 		for _, end := range endings {
-			for _, width := range quantities {
+			for _, width := range widths {
 				spans, err := Linear(begin, end, width)
 				require.NoError(
 					t,
@@ -187,11 +187,11 @@ func testLinearIsContinuousSig(t *testing.T) {
 }
 
 func testLinearIsContinuousUns(t *testing.T) {
-	beginning, endings, quantities := testLinearRangeUns()
+	beginning, endings, widths := testLinearRangeUns()
 
 	for _, begin := range beginning {
 		for _, end := range endings {
-			for _, width := range quantities {
+			for _, width := range widths {
 				spans, err := Linear(begin, end, width)
 				require.NoError(
 					t,
@@ -222,11 +222,11 @@ func TestLinearIsSorted(t *testing.T) {
 }
 
 func testLinearIsSortedSig(t *testing.T) {
-	beginning, endings, quantities := testLinearRangeSig()
+	beginning, endings, widths := testLinearRangeSig()
 
 	for _, begin := range beginning {
 		for _, end := range endings {
-			for _, width := range quantities {
+			for _, width := range widths {
 				spans, err := Linear(begin, end, width)
 				require.NoError(
 					t,
@@ -258,11 +258,11 @@ func testLinearIsSortedSig(t *testing.T) {
 }
 
 func testLinearIsSortedUns(t *testing.T) {
-	beginning, endings, quantities := testLinearRangeUns()
+	beginning, endings, widths := testLinearRangeUns()
 
 	for _, begin := range beginning {
 		for _, end := range endings {
-			for _, width := range quantities {
+			for _, width := range widths {
 				spans, err := Linear(begin, end, width)
 				require.NoError(
 					t,
@@ -308,12 +308,12 @@ func testLinearRangeSig() ([]int8, []int8, []int8) {
 		118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
 	}
 
-	quantities := []int8{
+	widths := []int8{
 		1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 		118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
 	}
 
-	return beginning, endings, quantities
+	return beginning, endings, widths
 }
 
 func testLinearRangeUns() ([]uint8, []uint8, []uint8) {
@@ -327,12 +327,12 @@ func testLinearRangeUns() ([]uint8, []uint8, []uint8) {
 		246, 247, 248, 249, 250, 251, 252, 253, 254, 255,
 	}
 
-	quantities := []uint8{
+	widths := []uint8{
 		1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 		246, 247, 248, 249, 250, 251, 252, 253, 254, 255,
 	}
 
-	return beginning, endings, quantities
+	return beginning, endings, widths
 }
 
 func BenchmarkLinear(b *testing.B) {
