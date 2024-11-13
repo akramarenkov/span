@@ -121,38 +121,40 @@ func Even[Type constraints.Integer](begin, end, quantity Type) iter.Seq2[uint64,
 	return iterator
 }
 
-func evenInc[Type constraints.Integer](
-	begin Type,
-	end Type,
-	distance Type,
-	remainder Type,
-	yield func(uint64, Span[Type]) bool,
-) {
-	id := uint64(0)
+func evenlyDistance[Type constraints.Integer](begin, end, quantity Type) (Type, Type) {
+	if begin < end {
+		// Overflow and other errors is not possible with these operations given the
+		// checks on the values ​​of the quantity argument located above in the calling
+		// function
+		distance, _ := safe.SubDiv(end, begin, quantity)
+		remainder, _ := safe.SubDivRem(end, begin, quantity)
 
-	for spanBegin, spanEnd := begin, begin+distance-1; ; {
-		if remainder != 0 {
-			spanEnd++
-			remainder--
+		// +1 due to the constant presence of begin in the sequence
+		//
+		// Overflow on this operation is impossible because maximum value of remainder
+		// is maximum value of the divisor minus one and at positive divisor is maximum
+		// value for given type minus one
+		remainder++
+
+		if distance == 0 {
+			distance = 1
+			remainder = 0
 		}
 
-		span := Span[Type]{
-			Begin: spanBegin,
-			End:   spanEnd,
-		}
-
-		if !yield(id, span) {
-			return
-		}
-
-		if spanEnd == end {
-			return
-		}
-
-		id++
-		spanBegin = spanEnd + 1
-		spanEnd += distance
+		return distance, remainder
 	}
+
+	distance, _ := safe.SubDiv(begin, end, quantity)
+	remainder, _ := safe.SubDivRem(begin, end, quantity)
+
+	remainder++
+
+	if distance == 0 {
+		distance = 1
+		remainder = 0
+	}
+
+	return distance, remainder
 }
 
 func evenDec[Type constraints.Integer](
@@ -189,38 +191,36 @@ func evenDec[Type constraints.Integer](
 	}
 }
 
-func evenlyDistance[Type constraints.Integer](begin, end, quantity Type) (Type, Type) {
-	if begin < end {
-		// Overflow and other errors is not possible with these operations given the
-		// checks on the values ​​of the quantity argument located above in the calling
-		// function
-		distance, _ := safe.SubDiv(end, begin, quantity)
-		remainder, _ := safe.SubDivRem(end, begin, quantity)
+func evenInc[Type constraints.Integer](
+	begin Type,
+	end Type,
+	distance Type,
+	remainder Type,
+	yield func(uint64, Span[Type]) bool,
+) {
+	id := uint64(0)
 
-		// +1 due to the constant presence of begin in the sequence
-		//
-		// Overflow on this operation is impossible because maximum value of remainder
-		// is maximum value of the divisor minus one and at positive divisor is maximum
-		// value for given type minus one
-		remainder++
-
-		if distance == 0 {
-			distance = 1
-			remainder = 0
+	for spanBegin, spanEnd := begin, begin+distance-1; ; {
+		if remainder != 0 {
+			spanEnd++
+			remainder--
 		}
 
-		return distance, remainder
+		span := Span[Type]{
+			Begin: spanBegin,
+			End:   spanEnd,
+		}
+
+		if !yield(id, span) {
+			return
+		}
+
+		if spanEnd == end {
+			return
+		}
+
+		id++
+		spanBegin = spanEnd + 1
+		spanEnd += distance
 	}
-
-	distance, _ := safe.SubDiv(begin, end, quantity)
-	remainder, _ := safe.SubDivRem(begin, end, quantity)
-
-	remainder++
-
-	if distance == 0 {
-		distance = 1
-		remainder = 0
-	}
-
-	return distance, remainder
 }
