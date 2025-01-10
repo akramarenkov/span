@@ -6,7 +6,7 @@
 
 ## Purpose
 
-Library that allows you to divide a sequence of something into spans
+Library that provides to divide a sequence of something into spans
 
 ## Usage
 
