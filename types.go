@@ -1,9 +1,9 @@
 package span
 
-import "golang.org/x/exp/constraints"
+import "cmp"
 
 // Describes span.
-type Span[Type constraints.Ordered] struct {
+type Span[Type cmp.Ordered] struct {
 	Begin Type
 	End   Type
 }

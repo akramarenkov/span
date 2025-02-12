@@ -1,6 +1,8 @@
 package span
 
 import (
+	"cmp"
+
 	"github.com/akramarenkov/safe"
 	"golang.org/x/exp/constraints"
 )
@@ -11,7 +13,7 @@ const (
 
 // Checks that a sequence of spans does not contain spans with different sequence types
 // (increasing or decreasing).
-func IsNotDiffSequencing[Type constraints.Ordered](spans []Span[Type]) error {
+func IsNotDiffSequencing[Type cmp.Ordered](spans []Span[Type]) error {
 	if len(spans) < significantSpansQuantity {
 		return nil
 	}
@@ -29,7 +31,7 @@ func IsNotDiffSequencing[Type constraints.Ordered](spans []Span[Type]) error {
 	return nil
 }
 
-func isTwoSpansNotDiffSequencing[Type constraints.Ordered](first, second Span[Type]) error {
+func isTwoSpansNotDiffSequencing[Type cmp.Ordered](first, second Span[Type]) error {
 	if first.Begin <= first.End && second.Begin <= second.End {
 		return nil
 	}
@@ -42,7 +44,7 @@ func isTwoSpansNotDiffSequencing[Type constraints.Ordered](first, second Span[Ty
 }
 
 // Checks that a spans sequence consists of only non-decreasing spans.
-func IsNonDecreasing[Type constraints.Ordered](spans []Span[Type]) error {
+func IsNonDecreasing[Type cmp.Ordered](spans []Span[Type]) error {
 	for _, span := range spans {
 		if span.Begin > span.End {
 			return ErrSpanSequenceNotNonDecreasing
@@ -53,7 +55,7 @@ func IsNonDecreasing[Type constraints.Ordered](spans []Span[Type]) error {
 }
 
 // Checks that a spans sequence consists of only non-increasing spans.
-func IsNonIncreasing[Type constraints.Ordered](spans []Span[Type]) error {
+func IsNonIncreasing[Type cmp.Ordered](spans []Span[Type]) error {
 	for _, span := range spans {
 		if span.Begin < span.End {
 			return ErrSpanSequenceNotNonIncreasing
@@ -64,7 +66,7 @@ func IsNonIncreasing[Type constraints.Ordered](spans []Span[Type]) error {
 }
 
 // Checks that a sequence of spans does not contain intersect spans.
-func IsNotIntersect[Type constraints.Ordered](spans []Span[Type]) error {
+func IsNotIntersect[Type cmp.Ordered](spans []Span[Type]) error {
 	if len(spans) < significantSpansQuantity {
 		return nil
 	}
@@ -80,7 +82,7 @@ func IsNotIntersect[Type constraints.Ordered](spans []Span[Type]) error {
 	return nil
 }
 
-func isTwoSpansNotIntersect[Type constraints.Ordered](first, second Span[Type]) error {
+func isTwoSpansNotIntersect[Type cmp.Ordered](first, second Span[Type]) error {
 	if first.End >= second.Begin && first.End <= second.End {
 		return ErrSpansIntersect
 	}

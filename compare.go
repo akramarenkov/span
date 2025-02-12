@@ -1,8 +1,6 @@
 package span
 
-import (
-	"golang.org/x/exp/constraints"
-)
+import "cmp"
 
 // Compare function for sorting of increasing sequence of spans.
 //
@@ -10,7 +8,7 @@ import (
 //
 // Partially detects the presence of spans that have a different sequence type, but
 // does not guarantee complete verification.
-func CompareInc[Type constraints.Ordered](first, second Span[Type]) int {
+func CompareInc[Type cmp.Ordered](first, second Span[Type]) int {
 	if first.Begin > first.End || second.Begin > second.End {
 		panic(ErrSpanSequenceNotNonDecreasing)
 	}
@@ -31,7 +29,7 @@ func CompareInc[Type constraints.Ordered](first, second Span[Type]) int {
 //
 // Partially detects the presence of spans that have a different sequence type, but
 // does not guarantee complete verification.
-func CompareDec[Type constraints.Ordered](first, second Span[Type]) int {
+func CompareDec[Type cmp.Ordered](first, second Span[Type]) int {
 	if first.Begin < first.End || second.Begin < second.End {
 		panic(ErrSpanSequenceNotNonIncreasing)
 	}
@@ -50,7 +48,7 @@ func CompareDec[Type constraints.Ordered](first, second Span[Type]) int {
 //
 // Partially detects the presence of spans that have a different sequence type, but
 // does not guarantee complete verification.
-func SearchInc[Type constraints.Ordered](item, target Span[Type]) int {
+func SearchInc[Type cmp.Ordered](item, target Span[Type]) int {
 	if item.Begin > item.End || target.Begin > target.End {
 		panic(ErrSpanSequenceNotNonDecreasing)
 	}
@@ -69,7 +67,7 @@ func SearchInc[Type constraints.Ordered](item, target Span[Type]) int {
 //
 // Partially detects the presence of spans that have a different sequence type, but
 // does not guarantee complete verification.
-func SearchDec[Type constraints.Ordered](item, target Span[Type]) int {
+func SearchDec[Type cmp.Ordered](item, target Span[Type]) int {
 	if item.Begin < item.End || target.Begin < target.End {
 		panic(ErrSpanSequenceNotNonIncreasing)
 	}
