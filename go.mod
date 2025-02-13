@@ -1,6 +1,6 @@
 module github.com/akramarenkov/span
 
-go 1.24
+go 1.24.0
 
 require (
 	github.com/akramarenkov/safe v0.20.2
