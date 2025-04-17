@@ -8,12 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestLinear(t *testing.T) {
-	testLinearIncreasing(t)
-	testLinearDecreasing(t)
-}
-
-func testLinearIncreasing(t *testing.T) {
+func TestLinearIncreasing(t *testing.T) {
 	spans, err := Linear[int8](2, 5, 1)
 	require.NoError(t, err)
 	require.Equal(t, []Span[int8]{{2, 2}, {3, 3}, {4, 4}, {5, 5}}, spans)
@@ -79,7 +74,7 @@ func testLinearIncreasing(t *testing.T) {
 	)
 }
 
-func testLinearDecreasing(t *testing.T) {
+func TestLinearDecreasing(t *testing.T) {
 	spans, err := Linear[int8](5, 2, 1)
 	require.NoError(t, err)
 	require.Equal(t, []Span[int8]{{5, 5}, {4, 4}, {3, 3}, {2, 2}}, spans)
@@ -151,13 +146,8 @@ func TestLinearError(t *testing.T) {
 	require.Equal(t, []Span[int](nil), spans)
 }
 
-func TestLinearIsContinuous(t *testing.T) {
-	testLinearIsContinuousSig(t)
-	testLinearIsContinuousUns(t)
-}
-
-func testLinearIsContinuousSig(t *testing.T) {
-	beginning, endings, widths := testLinearRangeSig()
+func TestLinearIsContinuousSigned(t *testing.T) {
+	beginning, endings, widths := testLinearRangeSigned()
 
 	for _, begin := range beginning {
 		for _, end := range endings {
@@ -186,8 +176,8 @@ func testLinearIsContinuousSig(t *testing.T) {
 	}
 }
 
-func testLinearIsContinuousUns(t *testing.T) {
-	beginning, endings, widths := testLinearRangeUns()
+func TestLinearIsContinuousUnsigned(t *testing.T) {
+	beginning, endings, widths := testLinearRangeUnsigned()
 
 	for _, begin := range beginning {
 		for _, end := range endings {
@@ -216,13 +206,8 @@ func testLinearIsContinuousUns(t *testing.T) {
 	}
 }
 
-func TestLinearIsSorted(t *testing.T) {
-	testLinearIsSortedSig(t)
-	testLinearIsSortedUns(t)
-}
-
-func testLinearIsSortedSig(t *testing.T) {
-	beginning, endings, widths := testLinearRangeSig()
+func TestLinearIsSortedSigned(t *testing.T) {
+	beginning, endings, widths := testLinearRangeSigned()
 
 	for _, begin := range beginning {
 		for _, end := range endings {
@@ -257,8 +242,8 @@ func testLinearIsSortedSig(t *testing.T) {
 	}
 }
 
-func testLinearIsSortedUns(t *testing.T) {
-	beginning, endings, widths := testLinearRangeUns()
+func TestLinearIsSortedUnsigned(t *testing.T) {
+	beginning, endings, widths := testLinearRangeUnsigned()
 
 	for _, begin := range beginning {
 		for _, end := range endings {
@@ -293,7 +278,7 @@ func testLinearIsSortedUns(t *testing.T) {
 	}
 }
 
-func testLinearRangeSig() ([]int8, []int8, []int8) {
+func testLinearRangeSigned() ([]int8, []int8, []int8) {
 	beginning := []int8{
 		-128, -127, -126, -125, -124, -123, -122, -121, -120, -119,
 		-10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
@@ -316,7 +301,7 @@ func testLinearRangeSig() ([]int8, []int8, []int8) {
 	return beginning, endings, widths
 }
 
-func testLinearRangeUns() ([]uint8, []uint8, []uint8) {
+func testLinearRangeUnsigned() ([]uint8, []uint8, []uint8) {
 	beginning := []uint8{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 		246, 247, 248, 249, 250, 251, 252, 253, 254, 255,

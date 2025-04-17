@@ -8,12 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestEvenly(t *testing.T) {
-	testEvenlyIncreasing(t)
-	testEvenlyDecreasing(t)
-}
-
-func testEvenlyIncreasing(t *testing.T) {
+func TestEvenlyIncreasing(t *testing.T) {
 	spans, err := Evenly[int8](0, 0, 3)
 	require.NoError(t, err)
 	require.Equal(t, []Span[int8]{{0, 0}}, spans)
@@ -59,7 +54,7 @@ func testEvenlyIncreasing(t *testing.T) {
 	require.Equal(t, []Span[int8]{{math.MinInt8, -1}, {0, math.MaxInt8}}, spans)
 }
 
-func testEvenlyDecreasing(t *testing.T) {
+func TestEvenlyDecreasing(t *testing.T) {
 	spans, err := Evenly[int8](6, 1, 3)
 	require.NoError(t, err)
 	require.Equal(t, []Span[int8]{{6, 5}, {4, 3}, {2, 1}}, spans)
@@ -195,13 +190,8 @@ func TestEvenlyError(t *testing.T) {
 	require.Equal(t, []Span[int](nil), spans)
 }
 
-func TestEvenlyIsContinuous(t *testing.T) {
-	testEvenlyIsContinuousSig(t)
-	testEvenlyIsContinuousUns(t)
-}
-
-func testEvenlyIsContinuousSig(t *testing.T) {
-	beginning, endings, quantities := testEvenlyRangeSig()
+func TestEvenlyIsContinuousSigned(t *testing.T) {
+	beginning, endings, quantities := testEvenlyRangeSigned()
 
 	for _, begin := range beginning {
 		for _, end := range endings {
@@ -230,8 +220,8 @@ func testEvenlyIsContinuousSig(t *testing.T) {
 	}
 }
 
-func testEvenlyIsContinuousUns(t *testing.T) {
-	beginning, endings, quantities := testEvenlyRangeUns()
+func TestEvenlyIsContinuousUnsigned(t *testing.T) {
+	beginning, endings, quantities := testEvenlyRangeUnsigned()
 
 	for _, begin := range beginning {
 		for _, end := range endings {
@@ -260,13 +250,8 @@ func testEvenlyIsContinuousUns(t *testing.T) {
 	}
 }
 
-func TestEvenlyIsSorted(t *testing.T) {
-	testEvenlyIsSortedSig(t)
-	testEvenlyIsSortedUns(t)
-}
-
-func testEvenlyIsSortedSig(t *testing.T) {
-	beginning, endings, quantities := testEvenlyRangeSig()
+func TestEvenlyIsSortedSigned(t *testing.T) {
+	beginning, endings, quantities := testEvenlyRangeSigned()
 
 	for _, begin := range beginning {
 		for _, end := range endings {
@@ -301,8 +286,8 @@ func testEvenlyIsSortedSig(t *testing.T) {
 	}
 }
 
-func testEvenlyIsSortedUns(t *testing.T) {
-	beginning, endings, quantities := testEvenlyRangeUns()
+func TestEvenlyIsSortedUnsigned(t *testing.T) {
+	beginning, endings, quantities := testEvenlyRangeUnsigned()
 
 	for _, begin := range beginning {
 		for _, end := range endings {
@@ -337,13 +322,8 @@ func testEvenlyIsSortedUns(t *testing.T) {
 	}
 }
 
-func TestEven(t *testing.T) {
-	testEvenSig(t)
-	testEvenUns(t)
-}
-
-func testEvenSig(t *testing.T) {
-	beginning, endings, quantities := testEvenlyRangeSig()
+func TestEvenSigned(t *testing.T) {
+	beginning, endings, quantities := testEvenlyRangeSigned()
 
 	for _, begin := range beginning {
 		for _, end := range endings {
@@ -378,8 +358,8 @@ func testEvenSig(t *testing.T) {
 	}
 }
 
-func testEvenUns(t *testing.T) {
-	beginning, endings, quantities := testEvenlyRangeUns()
+func TestEvenUnsigned(t *testing.T) {
+	beginning, endings, quantities := testEvenlyRangeUnsigned()
 
 	for _, begin := range beginning {
 		for _, end := range endings {
@@ -414,7 +394,7 @@ func testEvenUns(t *testing.T) {
 	}
 }
 
-func testEvenlyRangeSig() ([]int8, []int8, []int8) {
+func testEvenlyRangeSigned() ([]int8, []int8, []int8) {
 	beginning := []int8{
 		-128, -127, -126, -125, -124, -123, -122, -121, -120, -119,
 		-10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
@@ -437,7 +417,7 @@ func testEvenlyRangeSig() ([]int8, []int8, []int8) {
 	return beginning, endings, quantities
 }
 
-func testEvenlyRangeUns() ([]uint8, []uint8, []uint8) {
+func testEvenlyRangeUnsigned() ([]uint8, []uint8, []uint8) {
 	beginning := []uint8{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 		246, 247, 248, 249, 250, 251, 252, 253, 254, 255,
