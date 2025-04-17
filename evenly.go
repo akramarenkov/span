@@ -13,7 +13,7 @@ import (
 // If begin is greater than end, the sequence of integers will be considered decreasing,
 // otherwise - increasing.
 //
-// Length of the returned slice may be one less than the specified quantity of spans,
+// Length of the returned slice may be less than the specified quantity of spans,
 // but cannot be greater.
 //
 // If a zero or negative quantity of spans is specified, an error is returned.
