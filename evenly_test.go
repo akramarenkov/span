@@ -101,6 +101,90 @@ func testEvenlyDecreasing(t *testing.T) {
 	require.Equal(t, []Span[int8]{{math.MaxInt8, 0}, {-1, math.MinInt8}}, spans)
 }
 
+func TestEvenlyQuantityExceedsLengthIncreasing(t *testing.T) {
+	spans, err := Evenly[int8](1, 6, 3)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{1, 2}, {3, 4}, {5, 6}}, spans)
+	require.Equal(t, 3, cap(spans))
+
+	spans, err = Evenly[int8](1, 6, 4)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{1, 2}, {3, 4}, {5, 5}, {6, 6}}, spans)
+	require.Equal(t, 4, cap(spans))
+
+	spans, err = Evenly[int8](1, 6, 5)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{1, 2}, {3, 3}, {4, 4}, {5, 5}, {6, 6}}, spans)
+	require.Equal(t, 5, cap(spans))
+
+	spans, err = Evenly[int8](1, 6, 6)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{1, 1}, {2, 2}, {3, 3}, {4, 4}, {5, 5}, {6, 6}}, spans)
+	require.Equal(t, 6, cap(spans))
+
+	spans, err = Evenly[int8](1, 6, 7)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{1, 1}, {2, 2}, {3, 3}, {4, 4}, {5, 5}, {6, 6}}, spans)
+	require.Equal(t, 6, cap(spans))
+
+	spans, err = Evenly[int8](1, 6, 8)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{1, 1}, {2, 2}, {3, 3}, {4, 4}, {5, 5}, {6, 6}}, spans)
+	require.Equal(t, 6, cap(spans))
+
+	spans, err = Evenly[int8](1, 6, 9)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{1, 1}, {2, 2}, {3, 3}, {4, 4}, {5, 5}, {6, 6}}, spans)
+	require.Equal(t, 6, cap(spans))
+
+	spans, err = Evenly[int8](1, 6, math.MaxInt8)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{1, 1}, {2, 2}, {3, 3}, {4, 4}, {5, 5}, {6, 6}}, spans)
+	require.Equal(t, 6, cap(spans))
+}
+
+func TestEvenlyQuantityExceedsLengthDecreasing(t *testing.T) {
+	spans, err := Evenly[int8](6, 1, 3)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{6, 5}, {4, 3}, {2, 1}}, spans)
+	require.Equal(t, 3, cap(spans))
+
+	spans, err = Evenly[int8](6, 1, 4)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{6, 5}, {4, 3}, {2, 2}, {1, 1}}, spans)
+	require.Equal(t, 4, cap(spans))
+
+	spans, err = Evenly[int8](6, 1, 5)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{6, 5}, {4, 4}, {3, 3}, {2, 2}, {1, 1}}, spans)
+	require.Equal(t, 5, cap(spans))
+
+	spans, err = Evenly[int8](6, 1, 6)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{6, 6}, {5, 5}, {4, 4}, {3, 3}, {2, 2}, {1, 1}}, spans)
+	require.Equal(t, 6, cap(spans))
+
+	spans, err = Evenly[int8](6, 1, 7)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{6, 6}, {5, 5}, {4, 4}, {3, 3}, {2, 2}, {1, 1}}, spans)
+	require.Equal(t, 6, cap(spans))
+
+	spans, err = Evenly[int8](6, 1, 8)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{6, 6}, {5, 5}, {4, 4}, {3, 3}, {2, 2}, {1, 1}}, spans)
+	require.Equal(t, 6, cap(spans))
+
+	spans, err = Evenly[int8](6, 1, 9)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{6, 6}, {5, 5}, {4, 4}, {3, 3}, {2, 2}, {1, 1}}, spans)
+	require.Equal(t, 6, cap(spans))
+
+	spans, err = Evenly[int8](6, 1, math.MaxInt8)
+	require.NoError(t, err)
+	require.Equal(t, []Span[int8]{{6, 6}, {5, 5}, {4, 4}, {3, 3}, {2, 2}, {1, 1}}, spans)
+	require.Equal(t, 6, cap(spans))
+}
+
 func TestEvenlyError(t *testing.T) {
 	spans, err := Evenly(1, 2, -1)
 	require.Error(t, err)

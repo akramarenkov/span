@@ -33,7 +33,13 @@ func Evenly[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], 
 
 	distance, remainder := evenlyDistance(begin, end, quantity)
 
-	spans := make([]Span[Type], 0, quantity)
+	capacity := uint64(quantity)
+
+	if distance == 1 && remainder == 0 {
+		capacity = safe.IterSize(begin, end)
+	}
+
+	spans := make([]Span[Type], 0, capacity)
 
 	if begin > end {
 		for spanBegin, spanEnd := begin, begin-distance+1; ; {
