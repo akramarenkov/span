@@ -13,8 +13,8 @@ import (
 // If begin is greater than end, the sequence of integers will be considered decreasing,
 // otherwise - increasing.
 //
-// Length of the returned slice may be less than the specified quantity of spans,
-// but cannot be greater.
+// Length of the returned slice can be less than the specified quantity of spans, but
+// cannot be greater.
 //
 // If a zero or negative quantity of spans is specified, an error is returned.
 func Evenly[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], error) {
@@ -93,7 +93,7 @@ func Evenly[Type constraints.Integer](begin, end, quantity Type) ([]Span[Type], 
 // If begin is greater than end, the sequence of spans will be decreasing,
 // otherwise - increasing.
 //
-// Quantity of iterations can be one less than the specified quantity of spans, but
+// Quantity of iterations can be less than the specified quantity of spans, but
 // cannot be greater.
 //
 // If a zero or negative quantity of spans is specified, the iterator will panic.
