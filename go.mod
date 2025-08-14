@@ -5,7 +5,7 @@ go 1.25
 require (
 	github.com/akramarenkov/safe v0.20.3
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/exp v0.0.0-20250218142911-aa4b98e5adaa
+	golang.org/x/exp v0.0.0-20250813145105-42675adae3e6
 )
 
 require (
