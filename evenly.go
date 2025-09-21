@@ -127,6 +127,40 @@ func Even[Type constraints.Integer](begin, end, quantity Type) iter.Seq2[uint64,
 	return iterator
 }
 
+func EvenSlice[Type any, TypeQ constraints.Integer](divisible []Type, quantity TypeQ) iter.Seq[[]Type] {
+	if quantity < 0 {
+		panic(ErrSpansQuantityNegative)
+	}
+
+	if quantity == 0 {
+		panic(ErrSpansQuantityZero)
+	}
+
+	iterator := func(yield func([]Type) bool) {
+		if len(divisible) == 0 {
+			return
+		}
+
+		if quantity == 1 {
+			yield(divisible)
+			return
+		}
+
+		begin := uint64(0)
+		end := uint64(len(divisible)) - 1
+
+		distance, remainder := evenlyDistance(begin, end, uint64(quantity))
+
+		give := func(_ uint64, sp Span[uint64]) bool {
+			return yield(divisible[sp.Begin : sp.End+1])
+		}
+
+		evenInc(begin, end, distance, remainder, give)
+	}
+
+	return iterator
+}
+
 func evenlyDistance[Type constraints.Integer](begin, end, quantity Type) (Type, Type) {
 	if begin < end {
 		// Overflow and other errors is not possible with these operations given the
