@@ -328,7 +328,7 @@ func BenchmarkLinear(b *testing.B) {
 		err   error
 	)
 
-	for range b.N {
+	for b.Loop() {
 		spans, err = Linear(1, 2, 1)
 	}
 

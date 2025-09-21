@@ -472,7 +472,7 @@ func BenchmarkEvenly(b *testing.B) {
 		err   error
 	)
 
-	for range b.N {
+	for b.Loop() {
 		spans, err = Evenly(1, 2, 2)
 	}
 
@@ -485,7 +485,7 @@ func BenchmarkEven(b *testing.B) {
 
 	var spans []Span[int]
 
-	for range b.N {
+	for b.Loop() {
 		spans = make([]Span[int], 0, 2)
 
 		for _, span := range Even(1, 2, 2) {
@@ -501,7 +501,7 @@ func BenchmarkEvenNoRealloc(b *testing.B) {
 
 	spans := make([]Span[int], 0, 2)
 
-	for range b.N {
+	for b.Loop() {
 		spans = spans[:0]
 
 		for _, span := range Even(1, 2, 2) {
