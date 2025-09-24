@@ -464,46 +464,46 @@ func TestEvenPanic(t *testing.T) {
 	)
 }
 
-func TestEvenSlice(t *testing.T) {
-	testEvenSlice(t, []string(nil), [][]string(nil), 1)
-	testEvenSlice(t, []string{}, [][]string(nil), 1)
+func TestEvenSlices(t *testing.T) {
+	testEvenSlices(t, []string(nil), [][]string(nil), 1)
+	testEvenSlices(t, []string{}, [][]string(nil), 1)
 
-	testEvenSlice(t, []string{"1"}, [][]string{{"1"}}, 1)
-	testEvenSlice(t, []string{"1"}, [][]string{{"1"}}, 2)
-	testEvenSlice(t, []string{"1"}, [][]string{{"1"}}, 3)
-	testEvenSlice(t, []string{"1"}, [][]string{{"1"}}, 4)
-	testEvenSlice(t, []string{"1"}, [][]string{{"1"}}, 5)
-	testEvenSlice(t, []string{"1"}, [][]string{{"1"}}, 6)
+	testEvenSlices(t, []string{"1"}, [][]string{{"1"}}, 1)
+	testEvenSlices(t, []string{"1"}, [][]string{{"1"}}, 2)
+	testEvenSlices(t, []string{"1"}, [][]string{{"1"}}, 3)
+	testEvenSlices(t, []string{"1"}, [][]string{{"1"}}, 4)
+	testEvenSlices(t, []string{"1"}, [][]string{{"1"}}, 5)
+	testEvenSlices(t, []string{"1"}, [][]string{{"1"}}, 6)
 
-	testEvenSlice(t, []string{"1", "2"}, [][]string{{"1", "2"}}, 1)
-	testEvenSlice(t, []string{"1", "2"}, [][]string{{"1"}, {"2"}}, 2)
-	testEvenSlice(t, []string{"1", "2"}, [][]string{{"1"}, {"2"}}, 3)
-	testEvenSlice(t, []string{"1", "2"}, [][]string{{"1"}, {"2"}}, 4)
-	testEvenSlice(t, []string{"1", "2"}, [][]string{{"1"}, {"2"}}, 5)
-	testEvenSlice(t, []string{"1", "2"}, [][]string{{"1"}, {"2"}}, 6)
+	testEvenSlices(t, []string{"1", "2"}, [][]string{{"1", "2"}}, 1)
+	testEvenSlices(t, []string{"1", "2"}, [][]string{{"1"}, {"2"}}, 2)
+	testEvenSlices(t, []string{"1", "2"}, [][]string{{"1"}, {"2"}}, 3)
+	testEvenSlices(t, []string{"1", "2"}, [][]string{{"1"}, {"2"}}, 4)
+	testEvenSlices(t, []string{"1", "2"}, [][]string{{"1"}, {"2"}}, 5)
+	testEvenSlices(t, []string{"1", "2"}, [][]string{{"1"}, {"2"}}, 6)
 
-	testEvenSlice(t, []string{"1", "2", "3"}, [][]string{{"1", "2", "3"}}, 1)
-	testEvenSlice(t, []string{"1", "2", "3"}, [][]string{{"1", "2"}, {"3"}}, 2)
-	testEvenSlice(t, []string{"1", "2", "3"}, [][]string{{"1"}, {"2"}, {"3"}}, 3)
-	testEvenSlice(t, []string{"1", "2", "3"}, [][]string{{"1"}, {"2"}, {"3"}}, 4)
-	testEvenSlice(t, []string{"1", "2", "3"}, [][]string{{"1"}, {"2"}, {"3"}}, 5)
-	testEvenSlice(t, []string{"1", "2", "3"}, [][]string{{"1"}, {"2"}, {"3"}}, 6)
+	testEvenSlices(t, []string{"1", "2", "3"}, [][]string{{"1", "2", "3"}}, 1)
+	testEvenSlices(t, []string{"1", "2", "3"}, [][]string{{"1", "2"}, {"3"}}, 2)
+	testEvenSlices(t, []string{"1", "2", "3"}, [][]string{{"1"}, {"2"}, {"3"}}, 3)
+	testEvenSlices(t, []string{"1", "2", "3"}, [][]string{{"1"}, {"2"}, {"3"}}, 4)
+	testEvenSlices(t, []string{"1", "2", "3"}, [][]string{{"1"}, {"2"}, {"3"}}, 5)
+	testEvenSlices(t, []string{"1", "2", "3"}, [][]string{{"1"}, {"2"}, {"3"}}, 6)
 }
 
-func testEvenSlice(t *testing.T, divisible []string, expected [][]string, quantity int) {
+func testEvenSlices(t *testing.T, divisible []string, expected [][]string, quantity int) {
 	var actual [][]string //nolint:prealloc // To correctly reflect the actual behavior
 
-	for sub := range EvenSlice(divisible, quantity) {
+	for sub := range EvenSlices(divisible, quantity) {
 		actual = append(actual, sub)
 	}
 
 	require.Equal(t, expected, actual)
 }
 
-func TestEvenSlicePanic(t *testing.T) {
+func TestEvenSlicesPanic(t *testing.T) {
 	require.Panics(t,
 		func() {
-			for sub := range EvenSlice([]string{}, -1) {
+			for sub := range EvenSlices([]string{}, -1) {
 				_ = sub
 			}
 		},
@@ -511,7 +511,7 @@ func TestEvenSlicePanic(t *testing.T) {
 
 	require.Panics(t,
 		func() {
-			for sub := range EvenSlice([]string{}, 0) {
+			for sub := range EvenSlices([]string{}, 0) {
 				_ = sub
 			}
 		},
@@ -566,7 +566,7 @@ func BenchmarkEvenNoRealloc(b *testing.B) {
 	require.Equal(b, expected, spans)
 }
 
-func BenchmarkEvenSlice(b *testing.B) {
+func BenchmarkEvenSlices(b *testing.B) {
 	divisible := []string{"1", "2", "3", "4"}
 	expected := [][]string{{"1", "2"}, {"3", "4"}}
 
@@ -575,7 +575,7 @@ func BenchmarkEvenSlice(b *testing.B) {
 	for b.Loop() {
 		divided = divided[:0]
 
-		for sub := range EvenSlice(divisible, 2) {
+		for sub := range EvenSlices(divisible, 2) {
 			divided = append(divided, sub)
 		}
 	}

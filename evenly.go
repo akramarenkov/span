@@ -127,7 +127,14 @@ func Even[Type constraints.Integer](begin, end, quantity Type) iter.Seq2[uint64,
 	return iterator
 }
 
-func EvenSlice[Type any, TypeQ constraints.Integer](divisible []Type, quantity TypeQ) iter.Seq[[]Type] {
+// A range iterator used to iterating over a subslices obtained by evenly dividing
+// a main slice into a specified quantity of subslices.
+//
+// Quantity of iterations can be less than the specified quantity of subslices, but
+// cannot be greater.
+//
+// If a zero or negative quantity of subslices is specified, the iterator will panic.
+func EvenSlices[Type any, TypeQ constraints.Integer](divisible []Type, quantity TypeQ) iter.Seq[[]Type] {
 	if quantity < 0 {
 		panic(ErrSpansQuantityNegative)
 	}
